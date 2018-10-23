@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { NgEsriMapComponent } from './ng-esri-map.component';
 
 @NgModule({
-  imports: [
-  ],
+  imports: [],
   declarations: [NgEsriMapComponent],
   exports: [NgEsriMapComponent]
 })

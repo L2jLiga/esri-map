@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgEsriMapOptions } from '../../projects/ng-esri-map/src/lib/models';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  public mapOptions: NgEsriMapOptions = {
+    latitude: 58,
+    longitude: -96,
+    zoom: 16,
+    layersOpacity: .5,
+    featureLayers: [{
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/0'
+    }]
+  };
 }

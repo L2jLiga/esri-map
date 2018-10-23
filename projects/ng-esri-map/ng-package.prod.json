@@ -3,5 +3,6 @@
   "dest": "../../dist/ng-esri-map",
   "lib": {
     "entryFile": "src/public_api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": ["esri-loader", "@types/arcgis-js-api"]
 }
