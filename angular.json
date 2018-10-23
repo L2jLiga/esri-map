@@ -121,6 +121,46 @@
           }
         }
       }
+    },
+    "ng-esri-map": {
+      "root": "projects/ng-esri-map",
+      "sourceRoot": "projects/ng-esri-map/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ng-esri-map/tsconfig.lib.json",
+            "project": "projects/ng-esri-map/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/ng-esri-map/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-esri-map/src/test.ts",
+            "tsConfig": "projects/ng-esri-map/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-esri-map/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ng-esri-map/tsconfig.lib.json",
+              "projects/ng-esri-map/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "esri-map"

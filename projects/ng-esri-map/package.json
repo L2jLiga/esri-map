@@ -1,0 +1,12 @@
+{
+  "name": "ng-esri-map",
+  "version": "0.0.1",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
+    "esri-loader": "^2.5.0",
+    "esri-service": "^1.1.1"
+  }
+}
