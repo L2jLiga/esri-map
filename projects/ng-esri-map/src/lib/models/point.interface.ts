@@ -1,5 +1,8 @@
+/// <reference types="arcgis-js-api" />
+
 export interface Point {
-  showOnMap?: boolean;
-  latitude: number;
-  longitude: number;
+  enabled?: boolean;
+  latitude?: number;
+  longitude?: number;
+  popupTemplate?: __esri.PopupTemplateProperties;
 }

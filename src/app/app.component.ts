@@ -12,10 +12,17 @@ export class AppComponent {
       latitude: 48,
       longitude: 16
     },
+    customPoint: {
+      enabled: true
+    },
     zoom: 16,
     layersOpacity: .5,
     featureLayers: [{
       url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/0'
     }]
   };
+
+  public onPointSelection(coordinates): void {
+    alert(Object.values(coordinates).toString());
+  }
 }

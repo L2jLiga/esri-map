@@ -70,7 +70,10 @@ export async function createFeatureLayer(
   return layer;
 }
 
-export async function createPoint(latitude: number, longitude: number): Promise<__esri.Graphic> {
+export async function createPoint(latitude: number,
+                                  longitude: number,
+                                  popupTemplate?: __esri.PopupTemplateProperties
+): Promise<__esri.Graphic> {
   const geometry: any = {
     type: 'point', // autocasts as new Point()
     longitude,
@@ -88,7 +91,8 @@ export async function createPoint(latitude: number, longitude: number): Promise<
 
   return await createGraphic({
     geometry,
-    symbol
+    symbol,
+    popupTemplate
   });
 }
 

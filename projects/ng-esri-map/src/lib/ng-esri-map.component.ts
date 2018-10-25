@@ -1,16 +1,27 @@
 /// <reference types="arcgis-js-api" />
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
 import { FeatureLayer, NgEsriMapOptions } from './models';
+import { SELECT_POINT } from './registry';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const defaultOptions: NgEsriMapOptions = {
   point: {
-    showOnMap: true,
+    enabled: true,
     latitude: null,
     longitude: null
   },
+  customPoint: {},
   featureLayers: [],
   layersOpacity: 0.5,
   zoom: 16
@@ -40,6 +51,8 @@ const defaultOptions: NgEsriMapOptions = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NgEsriMapComponent implements OnDestroy {
+  @Output() public pointSelected: EventEmitter<{latitude: number, longitude: number}> = new EventEmitter();
+
   @ViewChild('mapElement') public mapElement: ElementRef;
   private mapView: __esri.MapView;
   private pointGraphic: __esri.Graphic;
@@ -67,6 +80,10 @@ export class NgEsriMapComponent implements OnDestroy {
       point: {
         ...defaultOptions.point,
         ...options.point
+      },
+      customPoint: {
+        ...defaultOptions.customPoint,
+        ...options.customPoint
       }
     };
 
@@ -152,31 +169,48 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private async initPoint() {
-    if (!this.options.point.showOnMap) {
+    if (!this.options.point.enabled) {
       return;
     }
 
-    const {latitude, longitude} = this.options.point;
+    const {latitude, longitude, popupTemplate} = this.options.point;
 
-    this.pointGraphic = await esri.createPoint(latitude, longitude);
+    this.pointGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
 
     this.mapView.graphics.add(this.pointGraphic);
   }
 
   private initClickListener() {
-    if (this.options.point.showOnMap) {
-      this.mapView.on('click', (event: __esri.MapViewClickEvent) => this.putPoint(event));
+    if (this.options.customPoint.enabled) {
+      this.mapView.on('double-click', (event: __esri.MapViewClickEvent) => this.putPoint(event));
     }
   }
 
   private async putPoint(event: __esri.MapViewClickEvent) {
-    this.mapView.graphics.removeMany([this.customPoint]);
+    event.stopPropagation();
 
     const {latitude, longitude} = event.mapPoint;
 
-    this.customPoint = await esri.createPoint(latitude, longitude);
+    this.mapView.graphics.removeMany([this.customPoint]);
+
+    this.customPoint = await esri.createPoint(latitude, longitude, {
+      actions: [{
+        id: SELECT_POINT,
+        title: 'Select point'
+      } as any]
+    });
+
+    this.mapView.popup.on('trigger-action', (evt: __esri.PopupViewModelTriggerActionEvent) => this.selectPoint(evt));
 
     this.mapView.graphics.add(this.customPoint);
+  }
+
+  private selectPoint(event: __esri.PopupViewModelTriggerActionEvent): void {
+    if (event.action.id === SELECT_POINT) {
+      const {latitude, longitude} = this.customPoint.geometry as any;
+
+      this.pointSelected.emit({latitude, longitude});
+    }
   }
 
   private destroyMap(): void {
