@@ -69,3 +69,26 @@ export async function createFeatureLayer(
   const layer: __esri.FeatureLayer = new FeatureLayer(props);
   return layer;
 }
+
+export async function createPoint(latitude: number, longitude: number): Promise<__esri.Graphic> {
+  const geometry: any = {
+    type: 'point', // autocasts as new Point()
+    longitude,
+    latitude
+  };
+
+  const symbol = {
+    type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+    color: [226, 119, 40],
+    outline: {
+      color: [255, 255, 255],
+      width: 2
+    }
+  };
+
+  return await createGraphic({
+    geometry,
+    symbol
+  });
+}
+

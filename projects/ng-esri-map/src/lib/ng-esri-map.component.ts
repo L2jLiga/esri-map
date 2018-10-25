@@ -2,13 +2,15 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
-import { NgEsriMapOptions } from './models';
-import { FeatureLayer } from './models/feature-layer.interface';
+import { FeatureLayer, NgEsriMapOptions } from './models';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const defaultOptions: NgEsriMapOptions = {
-  latitude: null,
-  longitude: null,
+  point: {
+    showOnMap: true,
+    latitude: null,
+    longitude: null
+  },
   featureLayers: [],
   layersOpacity: 0.5,
   zoom: 16
@@ -39,21 +41,9 @@ const defaultOptions: NgEsriMapOptions = {
 })
 export class NgEsriMapComponent implements OnDestroy {
   @ViewChild('mapElement') public mapElement: ElementRef;
-
-  @Input()
-  public set options(options: NgEsriMapOptions) {
-    this._options = Object.assign({}, defaultOptions, options);
-    this.initFeatureLayers();
-
-    this.init();
-  }
-
-  public get options() {
-    return this._options;
-  }
-
   private mapView: __esri.MapView;
   private pointGraphic: __esri.Graphic;
+  private customPoint: __esri.Graphic;
   private readonly loadOptions: ILoadScriptOptions = {
     url: `${arcgisJsApi}/init.js`,
     css: `${arcgisJsApi}/esri/css/main.css`,
@@ -61,10 +51,29 @@ export class NgEsriMapComponent implements OnDestroy {
       async: true
     }
   };
+  private featureLayers: Promise<__esri.FeatureLayer>[];
 
   private _options: NgEsriMapOptions;
 
-  private featureLayers: Promise<__esri.FeatureLayer>[];
+  public get options() {
+    return this._options;
+  }
+
+  @Input()
+  public set options(options: NgEsriMapOptions) {
+    this._options = {
+      ...defaultOptions,
+      ...options,
+      point: {
+        ...defaultOptions.point,
+        ...options.point
+      }
+    };
+
+    this.initFeatureLayers();
+
+    this.init();
+  }
 
   constructor() {
     if (!isLoaded()) {
@@ -81,6 +90,8 @@ export class NgEsriMapComponent implements OnDestroy {
     await this.initBasemapGallery();
     await this.initPoint();
     await this.initLayersList();
+
+    this.initClickListener();
   }
 
   private initFeatureLayers() {
@@ -94,7 +105,8 @@ export class NgEsriMapComponent implements OnDestroy {
   private async initMap(): Promise<void> {
     this.destroyMap();
 
-    const {latitude, longitude, zoom} = this.options;
+    const {zoom} = this.options;
+    const {latitude, longitude} = this.options.point;
 
     const map = await esri.createMap({
       basemap: 'streets',
@@ -105,7 +117,10 @@ export class NgEsriMapComponent implements OnDestroy {
       container: this.mapElement.nativeElement,
       map,
       zoom,
-      center: {longitude, latitude}
+      center: {
+        latitude,
+        longitude
+      }
     });
 
     await this.mapView.when();
@@ -117,32 +132,6 @@ export class NgEsriMapComponent implements OnDestroy {
     }, {});
 
     await this.mapView.ui.add(bgExpand, 'top-left');
-  }
-
-  private async initPoint() {
-    const {latitude, longitude} = this.options;
-
-    const geometry: any = {
-      type: 'point', // autocasts as new Point()
-      longitude,
-      latitude
-    };
-
-    const symbol = {
-      type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-      color: [226, 119, 40],
-      outline: {
-        color: [255, 255, 255],
-        width: 2
-      }
-    };
-
-    this.pointGraphic = await esri.createGraphic({
-      geometry,
-      symbol
-    });
-
-    this.mapView.graphics.add(this.pointGraphic);
   }
 
   private async initLayersList(): Promise<void> {
@@ -160,6 +149,34 @@ export class NgEsriMapComponent implements OnDestroy {
     });
 
     this.mapView.ui.add(layerList, 'top-right');
+  }
+
+  private async initPoint() {
+    if (!this.options.point.showOnMap) {
+      return;
+    }
+
+    const {latitude, longitude} = this.options.point;
+
+    this.pointGraphic = await esri.createPoint(latitude, longitude);
+
+    this.mapView.graphics.add(this.pointGraphic);
+  }
+
+  private initClickListener() {
+    if (this.options.point.showOnMap) {
+      this.mapView.on('click', (event: __esri.MapViewClickEvent) => this.putPoint(event));
+    }
+  }
+
+  private async putPoint(event: __esri.MapViewClickEvent) {
+    this.mapView.graphics.removeMany([this.customPoint]);
+
+    const {latitude, longitude} = event.mapPoint;
+
+    this.customPoint = await esri.createPoint(latitude, longitude);
+
+    this.mapView.graphics.add(this.customPoint);
   }
 
   private destroyMap(): void {

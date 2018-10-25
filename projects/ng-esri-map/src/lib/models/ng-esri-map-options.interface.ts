@@ -1,8 +1,8 @@
 import { FeatureLayers } from './feature-layer.interface';
+import { Point } from './point.interface';
 
 export interface NgEsriMapOptions {
-  latitude: number;
-  longitude: number;
+  point: Point;
   featureLayers: FeatureLayers;
   zoom?: number;
   layersOpacity?: number;

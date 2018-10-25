@@ -8,8 +8,10 @@ import { NgEsriMapOptions } from '../../projects/ng-esri-map/src/lib/models';
 })
 export class AppComponent {
   public mapOptions: NgEsriMapOptions = {
-    latitude: 58,
-    longitude: -96,
+    point: {
+      latitude: 48,
+      longitude: 16
+    },
     zoom: 16,
     layersOpacity: .5,
     featureLayers: [{
