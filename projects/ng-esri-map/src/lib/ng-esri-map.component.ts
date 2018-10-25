@@ -17,11 +17,11 @@ import { SELECT_POINT } from './registry';
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const defaultOptions: NgEsriMapOptions = {
   point: {
-    enabled: true,
+    showPointOnMap: true,
     latitude: null,
     longitude: null
   },
-  customPoint: {},
+  allowPointSelection: true,
   featureLayers: [],
   layersOpacity: 0.5,
   zoom: 16
@@ -80,10 +80,6 @@ export class NgEsriMapComponent implements OnDestroy {
       point: {
         ...defaultOptions.point,
         ...options.point
-      },
-      customPoint: {
-        ...defaultOptions.customPoint,
-        ...options.customPoint
       }
     };
 
@@ -169,7 +165,7 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private async initPoint() {
-    if (!this.options.point.enabled) {
+    if (!this.options.point.showPointOnMap) {
       return;
     }
 
@@ -181,7 +177,7 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private initClickListener() {
-    if (this.options.customPoint.enabled) {
+    if (this.options.allowPointSelection) {
       this.mapView.on('double-click', (event: __esri.MapViewClickEvent) => this.putPoint(event));
     }
   }

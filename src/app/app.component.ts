@@ -12,9 +12,7 @@ export class AppComponent {
       latitude: 48,
       longitude: 16
     },
-    customPoint: {
-      enabled: true
-    },
+    allowPointSelection: true,
     zoom: 16,
     layersOpacity: .5,
     featureLayers: [{
