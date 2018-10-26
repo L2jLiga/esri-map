@@ -51,6 +51,7 @@ const defaultOptions: NgEsriMapOptions = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NgEsriMapComponent implements OnDestroy {
+
   @Output() public pointSelected: EventEmitter<{latitude: number, longitude: number}> = new EventEmitter();
 
   @ViewChild('mapElement') public mapElement: ElementRef;
@@ -99,12 +100,14 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private async init() {
+    this.destroyMap();
+
     await this.initMap();
     await this.initBasemapGallery();
     await this.initPoint();
     await this.initLayersList();
 
-    this.initClickListener();
+    this.initPointSelection();
   }
 
   private initFeatureLayers() {
@@ -116,8 +119,6 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private async initMap(): Promise<void> {
-    this.destroyMap();
-
     const {zoom} = this.options;
     const {latitude, longitude} = this.options.point;
 
@@ -176,13 +177,14 @@ export class NgEsriMapComponent implements OnDestroy {
     this.mapView.graphics.add(this.pointGraphic);
   }
 
-  private initClickListener() {
+  private initPointSelection() {
     if (this.options.allowPointSelection) {
-      this.mapView.on('double-click', (event: __esri.MapViewClickEvent) => this.putPoint(event));
+      this.mapView.on('double-click', (event: __esri.MapViewClickEvent) => this.putPointOnMap(event));
     }
   }
 
-  private async putPoint(event: __esri.MapViewClickEvent) {
+  private async putPointOnMap(event: __esri.MapViewClickEvent) {
+    // Prevent map from zoom action
     event.stopPropagation();
 
     const {latitude, longitude} = event.mapPoint;
