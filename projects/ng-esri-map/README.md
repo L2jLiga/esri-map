@@ -3,9 +3,18 @@ Simple ESRI map component
 
 ## Usage
 
-In template:
-```html
-<ng-esri-map [options]="options" (pointSelected)="onPointSelection($event)"></ng-esri-map>
+In module:
+```typescript
+import { NgModule } from '@angular/core';
+import { NgEsriMapModule } from 'ng-esri-map';
+import { MapComponent } from './map.component';
+
+@NgModule({
+  imports: [NgEsriMapModule],
+  declarations: [MapComponent],
+  exports: [MapComponent]
+})
+export class MapModule {}
 ```
 
 In component:
@@ -30,6 +39,11 @@ export class MapComponent {
     // Do some stuff....
   }
 }
+```
+
+In template:
+```html
+<ng-esri-map [options]="options" (pointSelected)="onPointSelection($event)"></ng-esri-map>
 ```
 
 ## Map options
