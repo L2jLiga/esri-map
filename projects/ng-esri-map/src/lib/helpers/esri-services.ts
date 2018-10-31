@@ -13,8 +13,8 @@ export async function createMap(
   const [Map] = await loadModules([
     'esri/Map'
   ]);
-  const map = new Map(props);
-  return map;
+
+  return new Map(props);
 }
 
 export async function createMapView(
@@ -23,8 +23,8 @@ export async function createMapView(
   const [MapView] = await loadModules([
     'esri/views/MapView'
   ]);
-  const view: __esri.MapView = new MapView(props);
-  return view;
+
+  return new MapView(props);
 }
 
 export async function createBasemapsGallery(
@@ -38,8 +38,8 @@ export async function createBasemapsGallery(
   galleryProperties.container = document.createElement('div');
   const gallery = new BasemapGallery(galleryProperties);
   expandPropertis.content = gallery.domNode;
-  const expand = new Expand(expandPropertis);
-  return expand;
+
+  return new Expand(expandPropertis);
 }
 
 export async function createGraphic(
@@ -56,8 +56,8 @@ export async function findViewForLayer<TLayer extends __esri.Layer,
   view: __esri.View,
   layer: TLayer
 ): Promise<TLayerView> {
-  const layerView = (await view.whenLayerView(layer)) as TLayerView;
-  return layerView;
+
+  return (await view.whenLayerView(layer)) as TLayerView;
 }
 
 export async function createFeatureLayer(
@@ -66,8 +66,8 @@ export async function createFeatureLayer(
   const [FeatureLayer] = await loadModules([
     'esri/layers/FeatureLayer'
   ]);
-  const layer: __esri.FeatureLayer = new FeatureLayer(props);
-  return layer;
+
+  return new FeatureLayer(props);
 }
 
 export async function createPoint(latitude: number,

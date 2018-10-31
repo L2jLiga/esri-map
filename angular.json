@@ -133,11 +133,6 @@
           "options": {
             "tsConfig": "projects/ng-esri-map/tsconfig.lib.json",
             "project": "projects/ng-esri-map/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "project": "projects/ng-esri-map/ng-package.prod.json"
-            }
           }
         },
         "test": {

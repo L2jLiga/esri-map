@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgEsriMapOptions } from '../../projects/ng-esri-map/src/lib/models';
+import { NgEsriMapOptions } from '../../projects/ng-esri-map/src/public_api';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +21,6 @@ export class AppComponent {
   };
 
   public onPointSelection(coordinates): void {
-    alert(Object.values(coordinates).toString());
+    console.log(Object.values(coordinates).toString());
   }
 }
