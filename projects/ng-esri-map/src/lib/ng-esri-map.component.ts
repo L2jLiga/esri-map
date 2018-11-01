@@ -1,30 +1,18 @@
 /// <reference types="arcgis-js-api" />
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
-import { FeatureLayer, NgEsriMapOptions } from './models';
-import { SELECT_POINT } from './registry';
+import { FeatureLayer, FeatureLayersOptions, MapOptions, PointOptions, PopupOptions } from './models';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
-const defaultOptions: NgEsriMapOptions = {
-  point: {
-    showPointOnMap: true,
-    latitude: null,
-    longitude: null
-  },
-  allowPointSelection: true,
-  featureLayers: [],
-  layersOpacity: 0.5,
-  zoom: 16
+const loadOptions: ILoadScriptOptions = {
+  url: `${arcgisJsApi}/init.js`,
+  css: `${arcgisJsApi}/esri/css/main.css`,
+  dojoConfig: {
+    async: true
+  }
+};
+const noop = () => {
 };
 
 @Component({
@@ -48,50 +36,24 @@ const defaultOptions: NgEsriMapOptions = {
       height: 100%;
     }
   `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class NgEsriMapComponent implements OnDestroy {
 
-  @Output() public pointSelected: EventEmitter<{latitude: number, longitude: number}> = new EventEmitter();
-
   @ViewChild('mapElement') public mapElement: ElementRef;
+  public onRightClick: (event?: __esri.MapViewClickEvent) => void = noop;
+  public onDoubleClick: (event?: __esri.MapViewClickEvent) => void = noop;
   private mapView: __esri.MapView;
-  private pointGraphic: __esri.Graphic;
-  private customPoint: __esri.Graphic;
-  private readonly loadOptions: ILoadScriptOptions = {
-    url: `${arcgisJsApi}/init.js`,
-    css: `${arcgisJsApi}/esri/css/main.css`,
-    dojoConfig: {
-      async: true
-    }
-  };
+  private mainGraphic: __esri.Graphic;
+  private secondaryGraphic: __esri.Graphic;
   private featureLayers: Promise<__esri.FeatureLayer>[];
-
-  private _options: NgEsriMapOptions;
-
-  public get options() {
-    return this._options;
-  }
-
-  @Input()
-  public set options(options: NgEsriMapOptions) {
-    this._options = {
-      ...defaultOptions,
-      ...options,
-      point: {
-        ...defaultOptions.point,
-        ...options.point
-      }
-    };
-
-    this.initFeatureLayers();
-
-    this.init();
-  }
+  private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
+  private actionsListeners: { [action: string]: { remove: () => void } } = {};
 
   constructor() {
     if (!isLoaded()) {
-      loadScript(this.loadOptions);
+      loadScript(loadOptions);
     }
   }
 
@@ -99,28 +61,20 @@ export class NgEsriMapComponent implements OnDestroy {
     this.destroyMap();
   }
 
-  private async init() {
-    this.destroyMap();
-
-    await this.initMap();
-    await this.initBasemapGallery();
-    await this.initPoint();
-    await this.initLayersList();
-
-    this.initPointSelection();
-  }
-
-  private initFeatureLayers() {
-    this.featureLayers = this.options.featureLayers.map((fl: FeatureLayer) => esri.createFeatureLayer({
+  public buildFeatureLayersList(featureLayers: FeatureLayer[], options: FeatureLayersOptions = {
+    opacity: .5,
+    visible: false
+  }) {
+    this.featureLayers = featureLayers.map((fl: FeatureLayer) => esri.createFeatureLayer({
       ...fl,
-      opacity: .5,
-      visible: false
+      ...options
     }));
   }
 
-  private async initMap(): Promise<void> {
-    const {zoom} = this.options;
-    const {latitude, longitude} = this.options.point;
+  public async initMap(options: MapOptions): Promise<void> {
+    this.destroyMap();
+
+    const {latitude, longitude, zoom} = options;
 
     const map = await esri.createMap({
       basemap: 'streets',
@@ -130,14 +84,111 @@ export class NgEsriMapComponent implements OnDestroy {
     this.mapView = await esri.createMapView({
       container: this.mapElement.nativeElement,
       map,
-      zoom,
-      center: {
-        latitude,
-        longitude
-      }
+      zoom: zoom || 16,
+      center: {longitude, latitude}
     });
 
     await this.mapView.when();
+    await this.initBasemapGallery();
+    await this.initLayersList();
+
+    this.mapView.on('click', event => {
+      if (event.button === 2) {
+        this.onRightClick(event);
+      }
+    });
+    this.mapView.on('double-click', event => this.onDoubleClick(event));
+  }
+
+  public async setMainPoint(options: PointOptions) {
+    this.mapView.graphics.removeMany([this.mainGraphic]);
+
+    const {latitude, longitude} = options;
+
+    let popupTemplate: __esri.PopupTemplateProperties;
+    if (options.popupTemplate) {
+      popupTemplate = {
+        title: options.popupTemplate.title,
+        content: options.popupTemplate.content,
+        actions: this.toActions(options.popupTemplate.actions)
+      };
+    }
+
+    this.mainGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
+
+    this.mapView.graphics.add(this.mainGraphic);
+  }
+
+  public async setSecondaryGraphic(options: PointOptions) {
+    this.mapView.graphics.removeMany([this.secondaryGraphic]);
+
+    const {latitude, longitude} = options;
+
+    let popupTemplate: __esri.PopupTemplateProperties;
+    if (options.popupTemplate) {
+      popupTemplate = {
+        title: options.popupTemplate.title,
+        content: options.popupTemplate.content,
+        actions: this.toActions(options.popupTemplate.actions)
+      };
+    }
+
+    this.secondaryGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
+
+    this.mapView.graphics.add(this.secondaryGraphic);
+  }
+
+  public async createPopup(options: PopupOptions) {
+    const {latitude, longitude} = options.location;
+    const features: __esri.Graphic[] = [];
+
+    if (!options.actions) {
+      options.actions = [];
+    }
+
+    const point = await esri.createPoint(latitude, longitude, {
+      title: options.title,
+      content: options.content,
+      actions: this.toActions(options.actions)
+    });
+
+    features.push(point);
+
+    this.mapView.popup.open({
+      location: options.location as any,
+      features
+    });
+  }
+
+  public async createPopupAction(id: string,
+                                 title: string,
+                                 callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
+    if (this.actions[id]) {
+      this.actionsListeners[id].remove();
+    }
+
+    this.actions[id] = ({
+      id,
+      title
+    }) as any;
+
+    this.actionsListeners[id] = this.mapView.popup.on('trigger-action', (event: __esri.PopupViewModelTriggerActionEvent) => {
+      if (event.action.id === id) {
+        callback(event);
+      }
+    });
+
+    return id;
+  }
+
+  private toActions(actions: string[]): Array<__esri.ActionButton | __esri.ActionToggle> {
+    return actions.map(action => this.actions[action]).filter(Boolean);
+  }
+
+  private destroyMap(): void {
+    if (this.mapView && this.mapView.destroy) {
+      this.mapView.destroy();
+    }
   }
 
   private async initBasemapGallery(): Promise<void> {
@@ -163,58 +214,6 @@ export class NgEsriMapComponent implements OnDestroy {
     });
 
     this.mapView.ui.add(layerList, 'top-right');
-  }
-
-  private async initPoint() {
-    if (!this.options.point.showPointOnMap) {
-      return;
-    }
-
-    const {latitude, longitude, popupTemplate} = this.options.point;
-
-    this.pointGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
-
-    this.mapView.graphics.add(this.pointGraphic);
-  }
-
-  private initPointSelection() {
-    if (this.options.allowPointSelection) {
-      this.mapView.on('double-click', (event: __esri.MapViewClickEvent) => this.putPointOnMap(event));
-    }
-  }
-
-  private async putPointOnMap(event: __esri.MapViewClickEvent) {
-    // Prevent map from zoom action
-    event.stopPropagation();
-
-    const {latitude, longitude} = event.mapPoint;
-
-    this.mapView.graphics.removeMany([this.customPoint]);
-
-    this.customPoint = await esri.createPoint(latitude, longitude, {
-      actions: [{
-        id: SELECT_POINT,
-        title: 'Select point'
-      } as any]
-    });
-
-    this.mapView.popup.on('trigger-action', (evt: __esri.PopupViewModelTriggerActionEvent) => this.selectPoint(evt));
-
-    this.mapView.graphics.add(this.customPoint);
-  }
-
-  private selectPoint(event: __esri.PopupViewModelTriggerActionEvent): void {
-    if (event.action.id === SELECT_POINT) {
-      const {latitude, longitude} = this.customPoint.geometry as any;
-
-      this.pointSelected.emit({latitude, longitude});
-    }
-  }
-
-  private destroyMap(): void {
-    if (this.mapView && this.mapView.destroy) {
-      this.mapView.destroy();
-    }
   }
 
 }

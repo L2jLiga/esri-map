@@ -1,3 +1,5 @@
-export * from './feature-layer.interface';
-export * from './ng-esri-map-options.interface';
-export * from './point.interface';
+export { FeatureLayer, FeatureLayers } from './feature-layer.interface';
+export { FeatureLayersOptions } from './feature-layers-options.interface';
+export { MapOptions } from './map-options.interface';
+export { PointOptions } from './point-options.interface';
+export { PopupOptions } from './popup-options.interface';

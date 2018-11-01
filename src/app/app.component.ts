@@ -1,26 +1,62 @@
-import { Component } from '@angular/core';
-import { NgEsriMapOptions } from '../../projects/ng-esri-map/src/public_api';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgEsriMapComponent } from '../../projects/ng-esri-map/src/public_api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  public mapOptions: NgEsriMapOptions = {
-    point: {
-      latitude: 48,
-      longitude: 16
-    },
-    allowPointSelection: true,
-    zoom: 16,
-    layersOpacity: .5,
-    featureLayers: [{
-      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/0'
-    }]
-  };
+export class AppComponent implements OnInit {
+  @ViewChild('map') public map: NgEsriMapComponent;
 
-  public onPointSelection(coordinates): void {
-    console.log(Object.values(coordinates).toString());
+  public async ngOnInit() {
+    this.map.buildFeatureLayersList([{
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/0'
+    }]);
+
+    await this.map.initMap({
+      latitude: 48.19094,
+      longitude: 16.31815
+    });
+
+    await this.map.setMainPoint({
+      latitude: 48.19094,
+      longitude: 16.31815,
+      popupTemplate: {
+        title: 'Point at...',
+        content: `Lat: 48,19094<br/>Lot: 16,31815`,
+        actions: ['select-point']
+      }
+    });
+
+    this.map.createPopupAction('select-point', 'Select point', event => {
+      // TODO: Why ESRI typing not fully correct?
+      const {latitude, longitude} = (event as any).target.selectedFeature.geometry;
+
+      console.log(latitude, longitude);
+    });
+
+    this.map.onDoubleClick = event => {
+      event.stopPropagation();
+
+      const {latitude, longitude} = event.mapPoint;
+
+      this.map.setSecondaryGraphic({latitude, longitude, popupTemplate: {
+        title: 'Point at...',
+          content: `Lat: ${latitude}<br/>Lot: ${longitude}`,
+          actions: ['select-point']
+        }});
+    };
+
+    this.map.onRightClick = event => {
+      const {latitude, longitude} = event.mapPoint;
+
+      this.map.createPopup({
+        location: {latitude, longitude},
+        title: 'Point at...',
+        content: `Lat: ${latitude}<br/>Lot: ${longitude}`,
+        actions: ['select-point']
+      });
+    };
   }
 }
