@@ -1,13 +1,13 @@
-export interface FeatureLayersOptions {
+export interface FeatureLayerOptions {
   /**
    * Opacity for all layers
    * default: 16
    */
-  opacity: number;
+  opacity?: number;
 
   /**
    * Flag that indicates should layers be turned on by default
    * default: false
    */
-  visible: boolean;
+  visible?: boolean;
 }

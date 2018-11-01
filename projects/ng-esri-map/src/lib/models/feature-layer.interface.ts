@@ -1,4 +1,6 @@
-export interface FeatureLayer {
+import { FeatureLayerOptions } from './feature-layer-options.interface';
+
+export interface FeatureLayer extends FeatureLayerOptions {
   url: string;
   title?: string;
   id?: string;
