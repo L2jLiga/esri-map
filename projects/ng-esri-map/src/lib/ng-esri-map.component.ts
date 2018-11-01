@@ -47,7 +47,7 @@ export class NgEsriMapComponent implements OnDestroy {
   private mapView: __esri.MapView;
   private mainGraphic: __esri.Graphic;
   private secondaryGraphic: __esri.Graphic;
-  private featureLayers: Promise<__esri.FeatureLayer>[];
+  private featureLayers: Promise<__esri.FeatureLayer>[] = [];
   private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
   private actionsListeners: { [action: string]: { remove: () => void } } = {};
 
