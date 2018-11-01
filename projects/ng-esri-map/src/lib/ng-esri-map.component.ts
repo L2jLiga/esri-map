@@ -2,7 +2,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
-import { FeatureLayer, FeatureLayerOptions, MapOptions, PointOptions, PopupOptions } from './models';
+import { FeatureLayer, FeatureLayers, FeatureLayerOptions, MapOptions, PointOptions, PopupOptions } from './models';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const loadOptions: ILoadScriptOptions = {
@@ -15,6 +15,33 @@ const loadOptions: ILoadScriptOptions = {
 const noop = () => {
 };
 
+/**
+ * @ngModule NgEsriMapModule
+ * @description
+ *
+ * Configurable map component
+ *
+ * @usageNotes
+ *
+ * ### Usage example
+ *
+ * ```
+ * @Component({
+ *   selector: 'my-map',
+ *   template: '<ng-esri-map #map></ng-esri-map>',
+ *   styleUrls: ['./my-map.component.css']
+ * })
+ * export class MyMapComponent {
+ *   @ViewChild('myMap') public myMap: NgEsriMapComponent;
+ *
+ *   public ngOnInit() {
+ *     this.myMap.initMap({latitude: 1, longitude: 2});
+ *   }
+ * }
+ * ```
+ *
+ * @publicApi
+ */
 @Component({
   selector: 'ng-esri-map',
   template: `
@@ -61,7 +88,14 @@ export class NgEsriMapComponent implements OnDestroy {
     this.destroyMap();
   }
 
-  public buildFeatureLayersList(featureLayers: FeatureLayer[], options: FeatureLayerOptions = {
+  /**
+   * @description
+   * Build feature layers list from given array with parameters
+   * Each layer should have at least URL
+   *
+   * @publicApi
+   */
+  public buildFeatureLayersList(featureLayers: FeatureLayers, options: FeatureLayerOptions = {
     opacity: .5,
     visible: false
   }) {
@@ -71,6 +105,12 @@ export class NgEsriMapComponent implements OnDestroy {
     }));
   }
 
+  /**
+   * @description
+   * Initialize base map with center in given coordinates
+   *
+   * @publicApi
+   */
   public async initMap(options: MapOptions): Promise<void> {
     this.destroyMap();
 
@@ -100,6 +140,14 @@ export class NgEsriMapComponent implements OnDestroy {
     this.mapView.on('double-click', event => this.onDoubleClick(event));
   }
 
+  /**
+   * @description
+   * Put main point on the map
+   * BTW on map can exists only two points (just an restriction of current component)
+   * Each usage of this method will replace previous one
+   *
+   * @publicApi
+   */
   public async setMainPoint(options: PointOptions) {
     this.mapView.graphics.removeMany([this.mainGraphic]);
 
@@ -119,6 +167,14 @@ export class NgEsriMapComponent implements OnDestroy {
     this.mapView.graphics.add(this.mainGraphic);
   }
 
+  /**
+   * @description
+   * Put secondary point on the map
+   * BTW on map can exists only two points (just an restriction of current component)
+   * Each usage of this method will replace previous one
+   *
+   * @publicApi
+   */
   public async setSecondaryGraphic(options: PointOptions) {
     this.mapView.graphics.removeMany([this.secondaryGraphic]);
 
@@ -138,6 +194,12 @@ export class NgEsriMapComponent implements OnDestroy {
     this.mapView.graphics.add(this.secondaryGraphic);
   }
 
+  /**
+   * @description
+   * Create popup in given location with given title, content and actions list
+   *
+   * @publicApi
+   */
   public async createPopup(options: PopupOptions) {
     const {latitude, longitude} = options.location;
     const features: __esri.Graphic[] = [];
@@ -160,6 +222,13 @@ export class NgEsriMapComponent implements OnDestroy {
     });
   }
 
+  /**
+   * @description
+   * Create actions which can be added to popup
+   * If action with given ID already exists then it will replace it
+   *
+   * @publicApi
+   */
   public async createPopupAction(id: string,
                                  title: string,
                                  callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
