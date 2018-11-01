@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgEsriMapModule } from '../../projects/ng-esri-map/src/public_api';
+import { NgEsriMapModule } from 'ng-esri-map';
 import { AppComponent } from './app.component';
 
 @NgModule({

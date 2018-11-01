@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgEsriMapComponent } from '../../projects/ng-esri-map/src/public_api';
+import { NgEsriMapComponent } from 'ng-esri-map';
 
 @Component({
   selector: 'app-root',
