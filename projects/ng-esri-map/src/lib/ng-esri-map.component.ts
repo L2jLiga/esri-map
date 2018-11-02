@@ -2,7 +2,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
-import { FeatureLayer, FeatureLayerOptions, FeatureLayers, MapOptions, PointOptions, PopupOptions } from './models';
+import { Layer, LayerOptions, Layers, MapOptions, PointOptions, PopupOptions } from './models';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const loadOptions: ILoadScriptOptions = {
@@ -74,7 +74,7 @@ export class NgEsriMapComponent implements OnDestroy {
   private mapView: __esri.MapView;
   private mainGraphic: __esri.Graphic;
   private secondaryGraphic: __esri.Graphic;
-  private featureLayers: Promise<__esri.FeatureLayer>[] = [];
+  private layers: Promise<__esri.Layer>[] = [];
   private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
   private actionsListeners: { [action: string]: { remove: () => void } } = {};
 
@@ -90,18 +90,66 @@ export class NgEsriMapComponent implements OnDestroy {
 
   /**
    * @description
+   * Build layers list from arcgis server URL
+   */
+  public buildLayersFromUrl(layers: Layers, options: LayerOptions = {
+    opacity: .5,
+    visible: false
+  }) {
+    this.layers = layers.map((l: Layer) => esri.layerFromArcGISServerUrlParams(l.url, {
+      ...options,
+      ...l
+    })).concat(this.layers);
+  }
+
+  /**
+   * @description
    * Build feature layers list from given array with parameters
    * Each layer should have at least URL
    *
    * @publicApi
    */
-  public buildFeatureLayersList(featureLayers: FeatureLayers, options: FeatureLayerOptions = {
+  public buildFeatureLayersList(layers: Layers, options: LayerOptions = {
     opacity: .5,
     visible: false
   }) {
-    this.featureLayers = featureLayers.map((fl: FeatureLayer) => esri.createFeatureLayer({
+    this.layers = layers.map((l: Layer) => esri.createFeatureLayer({
       ...options,
-      ...fl
+      ...l
+    })).concat(this.layers);
+  }
+
+  /**
+   * @description
+   * Build imagery layers list from given array with parameters
+   * Each layer should have at least URL
+   *
+   * @publicApi
+   */
+  public buildImageryLayersList(layers: Layers, options: LayerOptions = {
+    opacity: .5,
+    visible: false
+  }) {
+    this.layers = layers.map((l: Layer) => esri.createImageryLayer({
+      ...options,
+      ...l
+    }));
+  }
+
+  /**
+   * @description
+   * Build map image layers list from given array with parameters
+   * Each layer should have at least URL
+   *
+   * @publicApi
+   */
+  public buildMapImageLayersList(layers: Layers, options: LayerOptions = {
+    opacity: .5,
+    visible: false
+  }) {
+    this.layers = layers.map((l: Layer) => esri.createMapImageLayer({
+      ...options,
+      ...l
     }));
   }
 
@@ -115,10 +163,16 @@ export class NgEsriMapComponent implements OnDestroy {
     this.destroyMap();
 
     const {latitude, longitude, zoom} = options;
+    let layers;
+    try {
+      layers = await Promise.all(this.layers);
+    } catch (error) {
+      console.error('An error happened while resolving layers');
+    }
 
     const map = await esri.createMap({
       basemap: 'streets',
-      layers: await Promise.all(this.featureLayers)
+      layers
     });
 
     this.mapView = await esri.createMapView({

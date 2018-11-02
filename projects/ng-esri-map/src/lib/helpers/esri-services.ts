@@ -1,5 +1,6 @@
 /// <reference types="arcgis-js-api" />
 import { loadModules } from 'esri-loader';
+import { Layer } from '../models';
 
 export async function createLayersList(properties?: __esri.LayerListProperties): Promise<__esri.LayerList> {
   const [LayerList] = await loadModules(['esri/widgets/LayerList']);
@@ -60,14 +61,44 @@ export async function findViewForLayer<TLayer extends __esri.Layer,
   return (await view.whenLayerView(layer)) as TLayerView;
 }
 
-export async function createFeatureLayer(
-  props: __esri.FeatureLayerProperties
-): Promise<__esri.FeatureLayer> {
-  const [FeatureLayer] = await loadModules([
-    'esri/layers/FeatureLayer'
+export async function layerFromArcGISServerUrlParams(url: string, properties: any): Promise<__esri.Layer> {
+  const [esriLayer] = await loadModules([
+    'esri/layers/Layer'
   ]);
 
-  return new FeatureLayer(props);
+  return esriLayer.fromArcGISServerUrl({
+    url,
+    properties
+  });
+}
+
+export async function createLayer(
+  type: string,
+  props: Layer
+): Promise<__esri.Layer> {
+  const [AnyLayer] = await loadModules([
+    'esri/layers/' + type
+  ]);
+
+  return new AnyLayer(props);
+}
+
+export async function createFeatureLayer(
+  props: Layer
+): Promise<__esri.Layer> {
+    return await createLayer('FeatureLayer', props);
+}
+
+export async function createImageryLayer(
+  props: Layer
+): Promise<__esri.Layer> {
+  return await createLayer('ImageryLayer', props);
+}
+
+export async function createMapImageLayer(
+  props: Layer
+): Promise<__esri.Layer> {
+  return await createLayer('MapImageLayer', props);
 }
 
 export async function createPoint(latitude: number,

@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   @ViewChild('map') public map: NgEsriMapComponent;
 
   public async ngOnInit() {
-    this.map.buildFeatureLayersList([{
+    this.map.buildLayersFromUrl([{
       url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/0'
     }]);
 

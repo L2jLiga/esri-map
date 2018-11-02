@@ -1,4 +1,4 @@
-export interface FeatureLayerOptions {
+export interface LayerOptions {
   /**
    * Opacity for all layers
    * default: 16
