@@ -1,5 +1,3 @@
-/// <reference types="arcgis-js-api" />
-
 export interface PointOptions {
   latitude: number;
   longitude: number;
