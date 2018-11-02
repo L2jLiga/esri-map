@@ -2,7 +2,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
-import { FeatureLayer, FeatureLayers, FeatureLayerOptions, MapOptions, PointOptions, PopupOptions } from './models';
+import { FeatureLayer, FeatureLayerOptions, FeatureLayers, MapOptions, PointOptions, PopupOptions } from './models';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const loadOptions: ILoadScriptOptions = {
@@ -251,6 +251,10 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private toActions(actions: string[]): Array<__esri.ActionButton | __esri.ActionToggle> {
+    if (!actions || !Array.isArray(actions)) {
+      return [];
+    }
+
     return actions.map(action => this.actions[action]).filter(Boolean);
   }
 
