@@ -2,7 +2,16 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
-import { Layer, LayerOptions, Layers, MapOptions, PointOptions, PopupOptions, ScaleBarProps } from './models';
+import {
+  HomeButtonProps,
+  Layer,
+  LayerOptions,
+  Layers,
+  MapOptions,
+  PointOptions,
+  PopupOptions,
+  ScaleBarProps
+} from './models';
 
 const arcgisJsApi = 'https://js.arcgis.com/4.9';
 const loadOptions: ILoadScriptOptions = {
@@ -197,6 +206,10 @@ export class NgEsriMapComponent implements OnDestroy {
     if (options.scaleBar) {
       await this.initScaleBar(options.scaleBarProps);
     }
+
+    if (options.homeButton) {
+      await this.initHomeButton(options.homeButtonProps);
+    }
   }
 
   /**
@@ -345,6 +358,17 @@ export class NgEsriMapComponent implements OnDestroy {
     });
 
     this.mapView.ui.add(scaleBar, position);
+  }
+
+  private async initHomeButton(props: HomeButtonProps = {}) {
+    const position = props.position || 'top-left';
+
+    const homeButton = await esri.createHomeButton({
+      ...props,
+      view: this.mapView
+    });
+
+    this.mapView.ui.add(homeButton, position);
   }
 
   private initPopupCleaner(point: __esri.Graphic): void {

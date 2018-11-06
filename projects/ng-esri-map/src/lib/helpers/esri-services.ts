@@ -1,6 +1,6 @@
 /// <reference types="arcgis-js-api" />
 import { loadModules } from 'esri-loader';
-import { Layer, ScaleBarProps } from '../models';
+import { HomeButtonProps, Layer, ScaleBarProps } from '../models';
 
 export async function createLayersList(properties?: __esri.LayerListProperties): Promise<__esri.LayerList> {
   const [LayerList] = await loadModules(['esri/widgets/LayerList']);
@@ -133,4 +133,12 @@ export async function createScaleBar(props: ScaleBarProps): Promise<__esri.Scale
   ]);
 
   return new ScaleBar(props);
+}
+
+export async function createHomeButton(props: HomeButtonProps): Promise<__esri.Home> {
+  const [Home] = await loadModules([
+    'esri/widgets/Home'
+  ]);
+
+  return new Home(props);
 }

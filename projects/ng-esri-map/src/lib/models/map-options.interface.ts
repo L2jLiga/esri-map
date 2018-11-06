@@ -1,3 +1,4 @@
+import { HomeButtonProps } from './home-button-props.interface';
 import { ScaleBarProps } from './scale-bar-props.interface';
 
 export interface MapOptions {
@@ -22,4 +23,10 @@ export interface MapOptions {
    */
   scaleBar?: boolean;
   scaleBarProps?: ScaleBarProps;
+
+  /**
+   * Home button displaying and props
+   */
+  homeButton?: boolean;
+  homeButtonProps?: HomeButtonProps;
 }
