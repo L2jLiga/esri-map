@@ -204,7 +204,7 @@ export class NgEsriMapComponent implements OnDestroy {
    * @publicApi
    */
   public async setMainPoint(options: PointOptions) {
-    this.mapView.graphics.removeMany([this.mainGraphic]);
+    this.removeMainGraphic();
 
     const {latitude, longitude} = options;
 
@@ -243,7 +243,7 @@ export class NgEsriMapComponent implements OnDestroy {
    * @publicApi
    */
   public async setSecondaryGraphic(options: PointOptions) {
-    this.mapView.graphics.removeMany([this.secondaryGraphic]);
+    this.removeSecondaryGraphic();
 
     const {latitude, longitude} = options;
 
