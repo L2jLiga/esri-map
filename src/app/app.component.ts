@@ -18,6 +18,9 @@ export class AppComponent implements OnInit {
       latitude: 48.19094,
       longitude: 16.31815,
       scaleBar: true,
+      scaleBarProps: {
+        unit: 'dual'
+      },
       homeButton: true
     });
 
