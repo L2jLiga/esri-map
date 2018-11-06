@@ -1,6 +1,6 @@
 /// <reference types="arcgis-js-api" />
 import { loadModules } from 'esri-loader';
-import { Layer } from '../models';
+import { Layer, ScaleBarProps } from '../models';
 
 export async function createLayersList(properties?: __esri.LayerListProperties): Promise<__esri.LayerList> {
   const [LayerList] = await loadModules(['esri/widgets/LayerList']);
@@ -127,3 +127,10 @@ export async function createPoint(latitude: number,
   });
 }
 
+export async function createScaleBar(props: ScaleBarProps): Promise<__esri.ScaleBar> {
+  const [ScaleBar] = await loadModules([
+    'esri/widgets/ScaleBar'
+  ]);
+
+  return new ScaleBar(props);
+}

@@ -1,3 +1,5 @@
+import { ScaleBarProps } from './scale-bar-props.interface';
+
 export interface MapOptions {
   /**
    * Latitude of map center
@@ -14,4 +16,10 @@ export interface MapOptions {
    * default: 16
    */
   zoom?: number;
+
+  /**
+   * Scale bar displaying and props
+   */
+  scaleBar?: boolean;
+  scaleBarProps?: ScaleBarProps;
 }

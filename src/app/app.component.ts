@@ -16,7 +16,8 @@ export class AppComponent implements OnInit {
 
     await this.map.initMap({
       latitude: 48.19094,
-      longitude: 16.31815
+      longitude: 16.31815,
+      scaleBar: true
     });
 
     await this.map.setMainPoint({
