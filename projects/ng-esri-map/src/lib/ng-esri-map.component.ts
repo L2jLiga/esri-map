@@ -224,6 +224,18 @@ export class NgEsriMapComponent implements OnDestroy {
 
   /**
    * @description
+   * Remove main graphic from the map
+   *
+   * @publicApi
+   */
+  public removeMainGraphic() {
+    this.mapView.graphics.remove(this.mainGraphic);
+
+    this.mainGraphic = null;
+  }
+
+  /**
+   * @description
    * Put secondary point on the map
    * BTW on map can exists only two points (just an restriction of current component)
    * Each usage of this method will replace previous one
@@ -247,6 +259,18 @@ export class NgEsriMapComponent implements OnDestroy {
     this.secondaryGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
 
     this.mapView.graphics.add(this.secondaryGraphic);
+  }
+
+  /**
+   * @description
+   * Remove secondary graphic from the map
+   *
+   * @publicApi
+   */
+  public removeSecondaryGraphic() {
+    this.mapView.graphics.remove(this.secondaryGraphic);
+
+    this.secondaryGraphic = null;
   }
 
   /**
