@@ -287,9 +287,9 @@ export class NgEsriMapComponent implements OnDestroy {
    *
    * @publicApi
    */
-  public async createPopupAction(id: string,
-                                 title: string,
-                                 callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
+  public createPopupAction(id: string,
+                           title: string,
+                           callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
     if (this.actions[id]) {
       this.actionsListeners[id].remove();
     }
