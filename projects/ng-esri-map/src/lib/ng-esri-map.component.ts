@@ -71,9 +71,9 @@ export class NgEsriMapComponent implements OnDestroy {
   @ViewChild('mapElement') public mapElement: ElementRef;
   public onRightClick: (event?: __esri.MapViewClickEvent) => void = noop;
   public onDoubleClick: (event?: __esri.MapViewClickEvent) => void = noop;
-  private mapView: __esri.MapView;
-  private mainGraphic: __esri.Graphic;
-  private secondaryGraphic: __esri.Graphic;
+  public mapView: __esri.MapView;
+  public mainGraphic: __esri.Graphic;
+  public secondaryGraphic: __esri.Graphic;
   private layers: Promise<__esri.Layer>[] = [];
   private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
   private actionsListeners: { [action: string]: { remove: () => void } } = {};
