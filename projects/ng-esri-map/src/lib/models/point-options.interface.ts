@@ -9,6 +9,6 @@ export interface PointOptions {
   popupTemplate?: {
     title: string;
     content: string;
-    actions?: string[]
+    actions?: string[];
   };
 }

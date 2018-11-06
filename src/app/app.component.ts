@@ -36,27 +36,19 @@ export class AppComponent implements OnInit {
       console.log(latitude, longitude);
     });
 
-    this.map.onDoubleClick = event => {
-      event.stopPropagation();
+    this.map.onRightClick = event => this.showPopup(event.mapPoint);
+  }
 
-      const {latitude, longitude} = event.mapPoint;
-
-      this.map.setSecondaryGraphic({latitude, longitude, popupTemplate: {
-        title: 'Point at...',
-          content: `Lat: ${latitude}<br/>Lot: ${longitude}`,
-          actions: ['select-point']
-        }});
-    };
-
-    this.map.onRightClick = event => {
-      const {latitude, longitude} = event.mapPoint;
-
-      this.map.createPopup({
-        location: {latitude, longitude},
-        title: 'Point at...',
-        content: `Lat: ${latitude}<br/>Lot: ${longitude}`,
-        actions: ['select-point']
-      });
-    };
+  private async showPopup({latitude, longitude}) {
+    return await this.map.createPopup({
+      title: 'Point at...',
+      content: `Lat: ${latitude}<br/>Lot: ${longitude}`,
+      location: {
+        latitude,
+        longitude
+      },
+      actions: ['select-point'],
+      showPointOnMap: true
+    });
   }
 }

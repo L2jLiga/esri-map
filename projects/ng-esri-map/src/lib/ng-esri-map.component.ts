@@ -77,6 +77,7 @@ export class NgEsriMapComponent implements OnDestroy {
   private layers: Promise<__esri.Layer>[] = [];
   private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
   private actionsListeners: { [action: string]: { remove: () => void } } = {};
+  private clearPopup: (v?: boolean) => void = noop;
 
   constructor() {
     if (!isLoaded()) {
@@ -255,8 +256,9 @@ export class NgEsriMapComponent implements OnDestroy {
    * @publicApi
    */
   public async createPopup(options: PopupOptions) {
+    this.clearPopup();
+
     const {latitude, longitude} = options.location;
-    const features: __esri.Graphic[] = [];
 
     if (!options.actions) {
       options.actions = [];
@@ -268,12 +270,14 @@ export class NgEsriMapComponent implements OnDestroy {
       actions: this.toActions(options.actions)
     });
 
-    features.push(point);
-
     this.mapView.popup.open({
-      location: options.location as any,
-      features
+      location: point.geometry,
+      features: [point]
     });
+
+    if (options.showPointOnMap) {
+      this.initPopupCleaner(point);
+    }
   }
 
   /**
@@ -302,6 +306,22 @@ export class NgEsriMapComponent implements OnDestroy {
     });
 
     return id;
+  }
+
+  private initPopupCleaner(point: __esri.Graphic): void {
+    this.mapView.graphics.add(point);
+
+    const subscription = this.mapView.popup.watch('visible', v => this.clearPopup(v));
+
+    this.clearPopup = visible => {
+      if (visible) {
+        return;
+      }
+
+      subscription.remove();
+      this.clearPopup = noop;
+      this.mapView.graphics.remove(point);
+    };
   }
 
   private toActions(actions: string[]): Array<__esri.ActionButton | __esri.ActionToggle> {

@@ -6,4 +6,5 @@ export interface PopupOptions {
   title: string;
   content: string;
   actions?: string[];
+  showPointOnMap: boolean;
 }
