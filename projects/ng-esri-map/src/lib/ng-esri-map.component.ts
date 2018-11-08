@@ -80,6 +80,7 @@ export class NgEsriMapComponent implements OnDestroy {
   @ViewChild('mapElement') public mapElement: ElementRef;
   public onRightClick: (event?: __esri.MapViewClickEvent) => void = noop;
   public onDoubleClick: (event?: __esri.MapViewClickEvent) => void = noop;
+  public map: __esri.Map;
   public mapView: __esri.MapView;
   public mainGraphic: __esri.Graphic;
   public secondaryGraphic: __esri.Graphic;
@@ -180,14 +181,14 @@ export class NgEsriMapComponent implements OnDestroy {
       console.error('An error happened while resolving layers');
     }
 
-    const map = await esri.createMap({
+    this.map = await esri.createMap({
       basemap: 'streets',
       layers
     });
 
     this.mapView = await esri.createMapView({
       container: this.mapElement.nativeElement,
-      map,
+      map: this.map,
       zoom: zoom || 16,
       center: {longitude, latitude}
     });
@@ -396,8 +397,11 @@ export class NgEsriMapComponent implements OnDestroy {
   }
 
   private destroyMap(): void {
-    if (this.mapView && this.mapView.destroy) {
-      this.mapView.destroy();
+    if (this.map && this.map.destroy) {
+      this.map.destroy();
+
+      this.map = null;
+      this.mapView = null;
     }
   }
 
