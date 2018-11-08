@@ -1,6 +1,10 @@
 # NgEsriMap component
 Easy to use component which helps to integrate and control ESRI map inside your Angular application
 
+## Life example
+
+You can find [here](https://l2jliga.github.io/esri-map)
+
 ## Basic usage
 
 1. Import `NgEsriMapModule` inside your Application

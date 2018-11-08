@@ -9,6 +9,7 @@
     "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
+    "docs": "ng build --prod --output-path docs --base-href esri-map && cp docs/index.html docs/404.html",
     "build-lib": "ng build ng-esri-map",
     "npm-pack": "cd dist/ng-esri-map && npm pack",
     "package": "npm run build-lib && npm run npm-pack"
