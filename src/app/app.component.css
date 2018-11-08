@@ -1,0 +1,33 @@
+h3 {
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  font-size: 18px;
+}
+
+.container {
+  display: flex;
+  height: 75vh;
+}
+
+.map {
+  flex-basis: 75vw;
+  flex-shrink: 0;
+  width: 75vw;
+}
+
+.configuration {
+  margin-left: 16px;
+  flex-basis: 100%;
+}
+
+.configuration__options {
+  padding: 8px;
+}
+
+.configuration__options label {
+  display: block;
+  margin: 8px;
+}

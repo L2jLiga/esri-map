@@ -1,3 +1,34 @@
-<div style="width: 90vw; height: 90vh;">
-  <ng-esri-map #map></ng-esri-map>
+<h3>ESRI map example</h3>
+<div class="container">
+  <app-map class="map"
+           [options]="options"
+           (pointSelected)="updateCoordinates($event)"
+  ></app-map>
+
+  <div class="configuration">
+    <p>Map configuration</p>
+    <hr />
+    <div class="configuration__options">
+      <label>
+        <input type="checkbox" [ngModel]="options.homeButton" (change)="updateOptions({homeButton: !options.homeButton})"/> Show home button
+      </label>
+      <label>
+        <input type="checkbox" [ngModel]="options.scaleBar" (change)="updateOptions({scaleBar: !options.scaleBar})"/> Show scale bar
+      </label>
+
+      <hr />
+
+      <label>
+        Langitude
+        <input [ngModel]="options.latitude" [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="updateOptions({latitude: $event})" />
+      </label>
+
+      <label>
+        Longitude
+        <input [ngModel]="options.longitude" [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="updateOptions({longitude: $event})" />
+      </label>
+
+      <button>Update</button>
+    </div>
+  </div>
 </div>
