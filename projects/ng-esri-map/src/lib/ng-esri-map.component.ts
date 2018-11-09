@@ -1,5 +1,14 @@
 /// <reference types="arcgis-js-api" />
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
 import * as esri from './helpers';
 import {
@@ -75,7 +84,7 @@ const noop = () => {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class NgEsriMapComponent implements OnDestroy {
+export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('mapElement') public mapElement: ElementRef;
   public onRightClick: (event?: __esri.MapViewClickEvent) => void = noop;
@@ -89,10 +98,14 @@ export class NgEsriMapComponent implements OnDestroy {
   private actionsListeners: { [action: string]: { remove: () => void } } = {};
   private clearPopup: (v?: boolean) => void = noop;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     if (!isLoaded()) {
       loadScript(loadOptions);
     }
+  }
+
+  public ngAfterViewInit(): void {
+    this.cdr.detach();
   }
 
   public ngOnDestroy(): void {
