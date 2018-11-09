@@ -115,15 +115,19 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
   /**
    * @description
    * Build layers list from arcgis server URL
+   *
+   * @publicApi
    */
   public buildLayersFromUrl(layers: Layers, options: LayerOptions = {
     opacity: .5,
     visible: false
   }) {
-    this.layers = layers.map((l: Layer) => esri.layerFromArcGISServerUrlParams(l.url, {
+    const layersFromArcGISServer = layers.map((l: Layer) => esri.layerFromArcGISServerUrlParams(l.url, {
       ...options,
       ...l
-    })).concat(this.layers);
+    }));
+
+    this.layers.push(...layersFromArcGISServer);
   }
 
   /**
@@ -137,10 +141,12 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    this.layers = layers.map((l: Layer) => esri.createFeatureLayer({
+    const featureLayers = layers.map((l: Layer) => esri.createFeatureLayer({
       ...options,
       ...l
-    })).concat(this.layers);
+    }));
+
+    this.layers.push(...featureLayers);
   }
 
   /**
@@ -154,10 +160,12 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    this.layers = layers.map((l: Layer) => esri.createImageryLayer({
+    const imageryLayers = layers.map((l: Layer) => esri.createImageryLayer({
       ...options,
       ...l
     }));
+
+    this.layers.push(...imageryLayers);
   }
 
   /**
@@ -171,10 +179,12 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    this.layers = layers.map((l: Layer) => esri.createMapImageLayer({
+    const mapImageLayers = layers.map((l: Layer) => esri.createMapImageLayer({
       ...options,
       ...l
     }));
+
+    this.layers.push(...mapImageLayers);
   }
 
   /**

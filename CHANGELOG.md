@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Component doesn't destroy correctly
+- New layers overwrite existing when use different layers types
 
 ## [2.1.0]
 ### Added
