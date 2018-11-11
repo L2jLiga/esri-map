@@ -109,6 +109,8 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.destroyLayers();
+
     this.destroyMap();
   }
 
@@ -417,6 +419,14 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     }
 
     return actions.map(action => this.actions[action]).filter(Boolean);
+  }
+
+  private async destroyLayers(): Promise<void> {
+    while (this.layers.length) {
+      const layer = await this.layers.pop();
+
+      layer.destroy();
+    }
   }
 
   private destroyMap(): void {

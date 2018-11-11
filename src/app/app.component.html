@@ -1,14 +1,20 @@
-<h3>ESRI map example</h3>
+<h3>ESRI map example <small>(view at <a href="https://github.com/L2jLiga/esri-map">gihub.com</a>)</small></h3>
+
 <div class="container">
-  <app-map class="map"
-           [options]="options"
-           (pointSelected)="updateCoordinates($event)"
-  ></app-map>
+  <div class="map">
+    <app-map *ngIf="!destroyed"
+             [options]="options"
+             (pointSelected)="updateCoordinates($event)"
+    ></app-map>
+  </div>
 
   <div class="configuration">
-    <p>Map configuration</p>
+    <p><b>Map configuration</b></p>
     <hr />
+
     <div class="configuration__options">
+      <b>Widgets</b>
+
       <label>
         <input type="checkbox" [ngModel]="options.homeButton" (change)="updateOptions({homeButton: !options.homeButton})"/> Show home button
       </label>
@@ -17,18 +23,37 @@
       </label>
 
       <hr />
+      <b>Centroid</b>
 
-      <label>
-        Langitude
-        <input [ngModel]="options.latitude" [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="updateOptions({latitude: $event})" />
-      </label>
+      <app-input [model]="options.latitude"
+                 [label]="'Latitude'"
+                 (modelChanged)="updateOptions({latitude: $event})"
+      ></app-input>
 
-      <label>
-        Longitude
-        <input [ngModel]="options.longitude" [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="updateOptions({longitude: $event})" />
-      </label>
+      <app-input [model]="options.longitude"
+                 [label]="'Latitude'"
+                 (modelChanged)="updateOptions({longitude: $event})"
+      ></app-input>
 
-      <button>Update</button>
+      <button class="configuration__button">
+        <span>Update</span>
+      </button>
+
+      <hr>
+
+      <b>Map view</b>
+
+      <button class="configuration__button"
+              [class.configuration__button--active]="destroyed"
+              (click)="destroyed = true">
+        <span>Destroy</span>
+      </button>
+
+      <button class="configuration__button"
+              [class.configuration__button--active]="!destroyed"
+              (click)="destroyed = false">
+        <span>Activate</span>
+      </button>
     </div>
   </div>
 </div>

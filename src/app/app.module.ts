@@ -4,11 +4,13 @@ import { NgModule } from '@angular/core';
 import { NgEsriMapModule } from 'ng-esri-map';
 import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
+import { InputComponent } from './input/input.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapComponent
+    MapComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,

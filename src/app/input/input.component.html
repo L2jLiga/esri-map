@@ -1,0 +1,9 @@
+<input id="latitude"
+       type="text"
+       [ngModel]="model"
+       [ngModelOptions]="{updateOn: 'blur'}"
+       (ngModelChange)="modelChanged.emit($event)"
+       required>
+<span class="highlight"></span>
+<span class="bar"></span>
+<label for="latitude">{{label}}</label>

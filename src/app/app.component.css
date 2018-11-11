@@ -1,5 +1,6 @@
 h3 {
   text-align: center;
+  margin: 0 0 16px;
 }
 
 p {
@@ -15,19 +16,91 @@ p {
 .map {
   flex-basis: 75vw;
   flex-shrink: 0;
-  width: 75vw;
 }
 
 .configuration {
   margin-left: 16px;
   flex-basis: 100%;
+  flex-shrink: 1;
+  overflow: hidden;
 }
 
 .configuration__options {
   padding: 8px;
 }
 
-.configuration__options label {
+.configuration__options label,
+.configuration__options b {
   display: block;
   margin: 8px;
+}
+
+.configuration__button {
+  position: relative;
+
+  display: inline-block;
+  margin: 8px 2px;
+  padding: 0;
+
+  overflow: hidden;
+
+  border-width: 0;
+  outline: none;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+
+  background-color: #2ecc71;
+  color: #ecf0f1;
+
+  transition: background-color .3s;
+}
+
+.configuration__button:hover:not(.configuration__button--active) {
+  background-color: #27ae60;
+}
+
+.configuration__button::before {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  display: block;
+  width: 0;
+  padding-top: 0;
+
+  border-radius: 100%;
+
+  background-color: rgba(236, 240, 241, .3);
+
+  transform: translate(-50%, -50%);
+}
+
+.configuration__button:active::before:not(.configuration__button--active) {
+  width: 120%;
+  padding-top: 120%;
+
+  transition: width .2s ease-out, padding-top .2s ease-out;
+}
+
+.configuration__button span {
+  position: relative;
+  display: block;
+  padding: 12px 24px;
+}
+
+.configuration__button--active {
+  cursor: default;
+  filter: grayscale(.5) brightness(.9);
+}
+
+@keyframes inputHighlighter {
+  from {
+    background: #5264AE;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
 }

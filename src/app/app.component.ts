@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgEsriMapComponent } from 'ng-esri-map';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +6,7 @@ import { NgEsriMapComponent } from 'ng-esri-map';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+    public destroyed = false;
     public options = {
       latitude:  44.95648,
       longitude: -93.261678,
