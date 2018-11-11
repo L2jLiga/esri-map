@@ -14,6 +14,8 @@ export class MapComponent {
   @Output() public pointSelected: EventEmitter<any> = new EventEmitter();
 
   public async init({latitude, longitude, layers, scaleBar, homeButton}) {
+    await this.map.clearAllLayers();
+
     this.map.buildMapImageLayersList(layers);
 
     await this.map.initMap({
@@ -35,6 +37,9 @@ export class MapComponent {
         actions: ['select-point']
       }
     });
+
+    // @ts-ignore
+    window.map = this.map;
 
     this.createActions();
 

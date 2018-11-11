@@ -109,7 +109,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.destroyLayers();
+    this.destroyAllLayers();
 
     this.destroyMap();
   }
@@ -187,6 +187,20 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     }));
 
     this.layers.push(...mapImageLayers);
+  }
+
+  /**
+   * @description
+   * Destroy all layers and remove them from the map
+   *
+   * @publicApi
+   */
+  public async clearAllLayers() {
+    if (this.map) {
+      this.map.layers.removeAll();
+    }
+
+    await this.destroyAllLayers();
   }
 
   /**
@@ -421,7 +435,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     return actions.map(action => this.actions[action]).filter(Boolean);
   }
 
-  private async destroyLayers(): Promise<void> {
+  private async destroyAllLayers() {
     while (this.layers.length) {
       const layer = await this.layers.pop();
 
