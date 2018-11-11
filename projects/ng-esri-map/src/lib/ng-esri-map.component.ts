@@ -236,12 +236,12 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     await this.initBasemapGallery();
     await this.initLayersList();
 
-    this.mapView.on('click', event => {
+    this.createMapListener('click', event => {
       if (event.button === 2) {
         this.onRightClick(event);
       }
     });
-    this.mapView.on('double-click', event => this.onDoubleClick(event));
+    this.createMapListener('double-click', event => this.onDoubleClick(event));
 
     if (options.scaleBar) {
       await this.initScaleBar(options.scaleBarProps);
@@ -276,7 +276,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
 
     this.mainGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
 
-    this.mapView.graphics.add(this.mainGraphic);
+    this.addGraphic(this.mainGraphic);
   }
 
   /**
@@ -286,7 +286,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    * @publicApi
    */
   public removeMainGraphic() {
-    this.mapView.graphics.remove(this.mainGraphic);
+    this.removeGraphic(this.mainGraphic);
 
     this.mainGraphic = null;
   }
@@ -315,7 +315,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
 
     this.secondaryGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
 
-    this.mapView.graphics.add(this.secondaryGraphic);
+    this.addGraphic(this.secondaryGraphic);
   }
 
   /**
@@ -325,7 +325,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    * @publicApi
    */
   public removeSecondaryGraphic() {
-    this.mapView.graphics.remove(this.secondaryGraphic);
+    this.removeGraphic(this.secondaryGraphic);
 
     this.secondaryGraphic = null;
   }
@@ -365,12 +365,17 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    * @description
    * Create actions which can be added to popup
    * If action with given ID already exists then it will replace it
+   * If map was destroyed then return void
    *
    * @publicApi
    */
   public createPopupAction(id: string,
                            title: string,
                            callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
+    if (!this.mapView) {
+      return;
+    }
+
     if (this.actions[id]) {
       this.actionsListeners[id].remove();
     }
@@ -397,7 +402,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
       view: this.mapView
     });
 
-    this.mapView.ui.add(scaleBar, position);
+    this.addWidget(scaleBar, position);
   }
 
   private async initHomeButton(props: HomeButtonProps = {}) {
@@ -408,11 +413,11 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
       view: this.mapView
     });
 
-    this.mapView.ui.add(homeButton, position);
+    this.addWidget(homeButton, position);
   }
 
   private initPopupCleaner(point: __esri.Graphic): void {
-    this.mapView.graphics.add(point);
+    this.addGraphic(point);
 
     const subscription = this.mapView.popup.watch('visible', v => this.clearPopup(v));
 
@@ -423,7 +428,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
 
       subscription.remove();
       this.clearPopup = noop;
-      this.mapView.graphics.remove(point);
+      this.removeGraphic(point);
     };
   }
 
@@ -444,7 +449,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private destroyMap(): void {
-    if (this.map && this.map.destroy) {
+    if (this.mapView && this.map.destroy) {
       this.map.destroy();
 
       this.map = null;
@@ -457,7 +462,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
       view: this.mapView
     }, {});
 
-    await this.mapView.ui.add(bgExpand, 'top-left');
+    this.addWidget(bgExpand, 'top-left');
   }
 
   private async initLayersList(): Promise<void> {
@@ -474,7 +479,30 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this.mapView.ui.add(layerList, 'top-right');
+    this.addWidget(layerList, 'top-right');
   }
 
+  private createMapListener(action: string, callback: (event?: __esri.MapViewClickEvent) => void) {
+    if (this.mapView) {
+      this.mapView.on(action, callback);
+    }
+  }
+
+  private addWidget(widget: __esri.Widget, position: string) {
+    if (this.mapView) {
+      this.mapView.ui.add(widget, position);
+    }
+  }
+
+  private addGraphic(graphic: __esri.Graphic) {
+    if (this.mapView) {
+      this.mapView.graphics.add(graphic);
+    }
+  }
+
+  private removeGraphic(graphic: __esri.Graphic) {
+    if (this.mapView) {
+      this.mapView.graphics.remove(graphic);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NgEsriMapComponent } from 'ng-esri-map';
 
 @Component({
@@ -14,9 +14,7 @@ export class MapComponent {
   @Output() public pointSelected: EventEmitter<any> = new EventEmitter();
 
   public async init({latitude, longitude, layers, scaleBar, homeButton}) {
-    await this.map.clearAllLayers();
-
-    this.map.buildMapImageLayersList(layers);
+    await this.rebuildAllLayers(layers);
 
     await this.map.initMap({
       latitude,
@@ -38,12 +36,15 @@ export class MapComponent {
       }
     });
 
-    // @ts-ignore
-    window.map = this.map;
-
     this.createActions();
 
     this.map.onRightClick = event => this.showPopup(event.mapPoint);
+  }
+
+  private async rebuildAllLayers(layers) {
+    await this.map.clearAllLayers();
+
+    this.map.buildMapImageLayersList(layers);
   }
 
   private createActions() {
