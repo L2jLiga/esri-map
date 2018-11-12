@@ -233,8 +233,9 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     });
 
     await this.mapView.when();
-    await this.initBasemapGallery();
-    await this.initLayersList();
+
+    this.initBasemapGallery().catch(noop);
+    this.initLayersList().catch(noop);
 
     this.createMapListener('click', event => {
       if (event.button === 2) {
