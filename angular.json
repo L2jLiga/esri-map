@@ -61,8 +61,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "src/tsconfig.app.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -88,8 +87,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ng-esri-map/tsconfig.lib.json",
-              "projects/ng-esri-map/tsconfig.spec.json"
+              "projects/ng-esri-map/tsconfig.lib.json"
             ],
             "exclude": [
               "**/node_modules/**"
