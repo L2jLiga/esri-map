@@ -244,11 +244,11 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     this.createMapListener('double-click', event => this.onDoubleClick(event));
 
     if (options.scaleBar) {
-      await this.initScaleBar(options.scaleBarProps);
+      this.initScaleBar(options.scaleBarProps).catch(noop);
     }
 
     if (options.homeButton) {
-      await this.initHomeButton(options.homeButtonProps);
+      this.initHomeButton(options.homeButtonProps).catch(noop);
     }
   }
 
