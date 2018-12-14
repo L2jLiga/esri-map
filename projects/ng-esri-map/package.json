@@ -1,8 +1,14 @@
 {
   "name": "ng-esri-map",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Configurable map component with layers support",
-  "keywords": ["angular", "map", "arcgis", "esri", "esri map"],
+  "keywords": [
+    "angular",
+    "map",
+    "arcgis",
+    "esri",
+    "esri map"
+  ],
   "repository": "git+https://github.com/L2jLiga/esri-map",
   "author": "L2jLiga",
   "license": "MIT",
