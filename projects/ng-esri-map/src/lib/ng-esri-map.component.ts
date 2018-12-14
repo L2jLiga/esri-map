@@ -10,6 +10,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { ILoadScriptOptions, isLoaded, loadScript } from 'esri-loader';
+import { noop } from 'rxjs';
 import * as esri from './helpers';
 import {
   HomeButtonProps,
@@ -29,8 +30,6 @@ const loadOptions: ILoadScriptOptions = {
   dojoConfig: {
     async: true
   }
-};
-const noop = () => {
 };
 
 /**
