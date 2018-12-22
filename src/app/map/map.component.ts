@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgEsriMapComponent } from 'ng-esri-map';
+import { EsriMapDirective } from 'ng-esri-map';
 
 @Component({
   selector: 'app-map',
@@ -7,15 +7,33 @@ import { NgEsriMapComponent } from 'ng-esri-map';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent {
-  @ViewChild('map') public map: NgEsriMapComponent;
+  @ViewChild('map') public map: EsriMapDirective;
   @Input() public set options(options) {
     this.init(options);
   }
   @Output() public pointSelected: EventEmitter<any> = new EventEmitter();
 
-  public async init({latitude, longitude, layers, scaleBar, homeButton}) {
-    await this.rebuildAllLayers(layers);
+  public mapImageLayers = [
+    {
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'
+    }
+  ];
+  public featureLayers = [
+    {
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/0'
+    },
+    {
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/1'
+    },
+    {
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/2'
+    },
+    {
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3'
+    },
+  ];
 
+  public async init({latitude, longitude, layers, scaleBar, homeButton}) {
     await this.map.initMap({
       latitude,
       longitude,
@@ -39,12 +57,6 @@ export class MapComponent {
     this.createActions();
 
     this.map.onRightClick = event => this.showPopup(event.mapPoint);
-  }
-
-  private async rebuildAllLayers(layers) {
-    await this.map.clearAllLayers();
-
-    this.map.buildMapImageLayersList(layers);
   }
 
   private createActions() {

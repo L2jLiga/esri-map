@@ -52,15 +52,6 @@ export async function createGraphic(
   return new Graphic(graphicProps);
 }
 
-export async function findViewForLayer<TLayer extends __esri.Layer,
-  TLayerView extends __esri.LayerView>(
-  view: __esri.View,
-  layer: TLayer
-): Promise<TLayerView> {
-
-  return (await view.whenLayerView(layer)) as TLayerView;
-}
-
 export async function layerFromArcGISServerUrlParams(url: string, properties: any): Promise<__esri.Layer> {
   const [esriLayer] = await loadModules([
     'esri/layers/Layer'
