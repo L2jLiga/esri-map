@@ -1,1 +1,1 @@
-export * from './actions';
+export { loadOptions } from './load-options';

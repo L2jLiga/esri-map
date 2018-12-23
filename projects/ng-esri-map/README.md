@@ -10,12 +10,15 @@ You can find [here](https://l2jliga.github.io/esri-map)
 1. Import `NgEsriMapModule` inside your Application
 1. Insert map component into template like this:
    ```html
-   <ng-esri-map #myMap></ng-esri-map>
+   <div #myMap="ngEsriMap"
+        ngEsriMap
+        [ngEsriMapImageLayers]="layers"
+   ></div>
    ```
 1. Control map inside your component:
    ```typescript
    import { Component, ViewChild } from '@angular/core';
-   import { NgEsriMapComponent } from 'ng-esri-map';
+   import { EsriMapDirective, Layer } from 'ng-esri-map';
    
    @Component({
      selector: 'my-map',
@@ -23,7 +26,12 @@ You can find [here](https://l2jliga.github.io/esri-map)
      styleUrls: ['./my-map.component.css']
    })
    export class MyMapComponent {
-     @ViewChild('myMap') public myMap: NgEsriMapComponent;
+     public layers: Layer[] = [
+       {
+         url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'
+       }
+     ];
+     @ViewChild('myMap') private myMap: EsriMapDirective;
 
      public ngOnInit() {
        this.myMap.initMap({latitude: 1, longitude: 2});

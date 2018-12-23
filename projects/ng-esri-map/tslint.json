@@ -4,13 +4,13 @@
         "directive-selector": [
             true,
             "attribute",
-            "lib",
+            "ngEsri",
             "camelCase"
         ],
         "component-selector": [
             true,
             "element",
-            "ng",
+            "ng-esri",
             "kebab-case"
         ]
     }

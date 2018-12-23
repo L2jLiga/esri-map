@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Introduce directives way to build the map
+
+### Changed
+- Home widget now returns to main point if it exists
+- Build target changed to ES9
+- Added support for Angular 7
+- Replace async/await with Promise.then in esri-services
+- ngEsriMap component use directives to build itself
+
+## [2.1.3]
 ### Changed
 - Upgraded CLI to 6.2.8
 - Initialize basemap gallery, layers list, scale bar and home button in parallel
@@ -64,7 +75,8 @@ Implemented APIs thought component
 
 ## [1.0.0] - Initial release
 
-[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v2.1.2...HEAD
+[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v2.1.3...HEAD
+[2.1.3]: https://github.com/L2jLiga/esri-map/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/L2jLiga/esri-map/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/L2jLiga/esri-map/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/L2jLiga/esri-map/compare/4fa4348...v2.1.0
