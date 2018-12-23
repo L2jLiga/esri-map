@@ -22,9 +22,9 @@
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
-    "@types/arcgis-js-api": "^4.9.0",
+    "@types/arcgis-js-api": "^4.10.0",
     "core-js": "^2.5.4",
-    "esri-loader": "^2.5.0",
+    "esri-loader": "^2.6.0",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"
   },
