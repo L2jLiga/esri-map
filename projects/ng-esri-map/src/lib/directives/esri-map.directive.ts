@@ -13,6 +13,7 @@ import {
 } from '../helpers';
 import { HomeButtonProps, MapOptions, PointOptions, PopupOptions, ScaleBarProps } from '../models';
 import { loadOptions } from '../registry';
+import GoToParameters = __esri.GoToParameters;
 
 /**
  * @ngModule NgEsriMapModule
@@ -108,6 +109,8 @@ export class EsriMapDirective implements OnDestroy {
     if (options.homeButton) {
       this.initHomeButton(options.homeButtonProps).catch(noop);
     }
+
+    return this.mapView.when();
   }
 
   /**
@@ -268,7 +271,18 @@ export class EsriMapDirective implements OnDestroy {
 
     const homeButton = await createHomeButton({
       ...props,
-      view: this.mapView
+      view: this.mapView,
+      goToOverride: (view: __esri.MapView, params: __esri.GoToParameters) => {
+        const scale = params.target.scale;
+        let center = params.target.targetGeometry;
+
+        if (this.mainGraphic) {
+          center = this.mainGraphic.geometry;
+        }
+
+        // @ts-ignore
+        return view.goTo({center, scale});
+      }
     });
 
     this.addWidget(homeButton, position);

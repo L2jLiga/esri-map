@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduce directives way to build the map
 
 ### Changed
+- Home widget now returns to main point if it exists
 - Build target changed to ES9
 - Added support for Angular 7
 - Replace async/await with Promise.then in esri-services

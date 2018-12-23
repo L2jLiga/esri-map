@@ -9,12 +9,24 @@ import { NgEsriMapComponent } from 'ng-esri-map';
 export class MapComponent {
   @ViewChild('map') public map: NgEsriMapComponent;
   @Input() public set options(options) {
+    const {scaleBar, homeButton} = this.prevOptions;
+
+    if (scaleBar === options.scaleBar && homeButton === options.homeButton) {
+      this.updateMainPoint(options);
+
+      return;
+    }
+
     this.buildMap(options);
+
+    this.prevOptions = options;
   }
   @Input() public set layers(layers) {
     this.rebuildAllLayers(layers);
   }
   @Output() public pointSelected: EventEmitter<any> = new EventEmitter();
+
+  private prevOptions: any = {};
 
   public async buildMap({latitude, longitude, scaleBar, homeButton}) {
     await this.map.initMap({
@@ -27,6 +39,13 @@ export class MapComponent {
       homeButton
     });
 
+    this.updateMainPoint({latitude, longitude});
+    this.createActions();
+
+    this.map.onRightClick = event => this.showPopup(event.mapPoint);
+  }
+
+  private async updateMainPoint({latitude, longitude}) {
     await this.map.setMainPoint({
       latitude,
       longitude,
@@ -37,9 +56,7 @@ export class MapComponent {
       }
     });
 
-    this.createActions();
-
-    this.map.onRightClick = event => this.showPopup(event.mapPoint);
+    this.map.mapView.goTo(this.map.mainGraphic);
   }
 
   private rebuildAllLayers(layers) {
