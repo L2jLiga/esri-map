@@ -4,6 +4,7 @@
   <div class="map">
     <app-map *ngIf="!destroyed"
              [options]="options"
+             [layers]="layers"
              (pointSelected)="updateCoordinates($event)"
     ></app-map>
   </div>
@@ -48,12 +49,23 @@
               (click)="destroyed = true">
         <span>Destroy</span>
       </button>
-
+      &nbsp;
       <button class="configuration__button"
               [class.configuration__button--active]="!destroyed"
               (click)="destroyed = false">
         <span>Activate</span>
       </button>
+
+      <b>Layers:</b>
+      <button class="configuration__button"
+              [class.configuration__button--active]="layers.length"
+              (click)="this.layers=[{url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'}]"
+      ><span>Restore layers</span></button>
+      &nbsp;
+      <button class="configuration__button"
+              [class.configuration__button--active]="!layers.length"
+              (click)="this.layers=[]"
+      ><span>Clean-up layer</span></button>
     </div>
   </div>
 </div>

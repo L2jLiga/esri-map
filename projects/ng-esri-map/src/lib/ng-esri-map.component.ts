@@ -4,24 +4,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
-  OnDestroy,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
 import { isLoaded, loadScript } from 'esri-loader';
-import { noop } from 'rxjs';
-import * as esri from './helpers';
-import {
-  HomeButtonProps,
-  Layer,
-  LayerOptions,
-  Layers,
-  MapOptions,
-  PointOptions,
-  PopupOptions,
-  ScaleBarProps
-} from './models';
+import { EsriMapDirective } from './directives/esri-map.directive';
+import { Layer, LayerOptions, Layers, MapOptions, PointOptions, PopupOptions } from './models';
 import { loadOptions } from './registry';
 
 /**
@@ -54,9 +42,13 @@ import { loadOptions } from './registry';
 @Component({
   selector: 'ng-esri-map',
   template: `
-    <div #mapElement
-         id="map"
-         class="map"></div>`,
+    <div class="ngEsriMap"
+         ngEsriMap
+         #ngEsriMap='ngEsriMap'
+         [ngEsriFeatureLayers]="featureLayers"
+         [ngEsriImageryLayers]="imageryLayers"
+         [ngEsriMapImageLayers]="mapImageLayers"
+         [ngEsriArcGISServerLayers]="serverLayers"></div>`,
   styles: [`
     :host {
       position: relative;
@@ -65,7 +57,7 @@ import { loadOptions } from './registry';
       display: block;
     }
 
-    div.map {
+    div.ngEsriMap {
       margin: 0;
       padding: 0;
       width: 100%;
@@ -75,19 +67,40 @@ import { loadOptions } from './registry';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
+export class NgEsriMapComponent implements AfterViewInit {
+  public featureLayers: Layer[] = [];
+  public imageryLayers: Layer[] = [];
+  public mapImageLayers: Layer[] = [];
+  public serverLayers: Layer[] = [];
 
-  @ViewChild('mapElement') public mapElement: ElementRef;
-  public onRightClick: (event?: __esri.MapViewClickEvent) => void = noop;
-  public onDoubleClick: (event?: __esri.MapViewClickEvent) => void = noop;
-  public map: __esri.Map;
-  public mapView: __esri.MapView;
-  public mainGraphic: __esri.Graphic;
-  public secondaryGraphic: __esri.Graphic;
-  private layers: Promise<__esri.Layer>[] = [];
-  private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
-  private actionsListeners: { [action: string]: { remove: () => void } } = {};
-  private clearPopup: (v?: boolean) => void = noop;
+  @ViewChild('ngEsriMap') private ngEsriMap: EsriMapDirective;
+
+  public get onRightClick() {
+    return this.ngEsriMap.onRightClick;
+  }
+  public set onRightClick(action: (event?: __esri.MapViewClickEvent) => void) {
+    this.ngEsriMap.onRightClick = action;
+  }
+
+  public get onDoubleClick() {
+    return this.ngEsriMap.onDoubleClick;
+  }
+  public set onDoubleClick(action: (event?: __esri.MapViewClickEvent) => void) {
+    this.ngEsriMap.onDoubleClick = action;
+  }
+
+  public get map() {
+    return this.ngEsriMap.map;
+  }
+  public get mapView() {
+    return this.ngEsriMap.mapView;
+  }
+  public get secondaryGraphic() {
+    return this.ngEsriMap.secondaryGraphic;
+  }
+  public get mainGraphic() {
+    return this.ngEsriMap.mainGraphic;
+  }
 
   constructor(private cdr: ChangeDetectorRef) {
     if (!isLoaded()) {
@@ -95,14 +108,8 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  public ngAfterViewInit(): void {
+  public ngAfterViewInit() {
     this.cdr.detach();
-  }
-
-  public ngOnDestroy(): void {
-    this.destroyAllLayers();
-
-    this.destroyMap();
   }
 
   /**
@@ -115,12 +122,9 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    const layersFromArcGISServer = layers.map((l: Layer) => esri.layerFromArcGISServerUrlParams(l.url, {
-      ...options,
-      ...l
-    }));
+    layers.forEach(layer => this.serverLayers.push({...layer, ...options}));
 
-    this.layers.push(...layersFromArcGISServer);
+    this.cdr.detectChanges();
   }
 
   /**
@@ -134,12 +138,9 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    const featureLayers = layers.map((l: Layer) => esri.createFeatureLayer({
-      ...options,
-      ...l
-    }));
+    layers.forEach(layer => this.featureLayers.push({...layer, ...options}));
 
-    this.layers.push(...featureLayers);
+    this.cdr.detectChanges();
   }
 
   /**
@@ -153,12 +154,9 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    const imageryLayers = layers.map((l: Layer) => esri.createImageryLayer({
-      ...options,
-      ...l
-    }));
+    layers.forEach(layer => this.imageryLayers.push({...layer, ...options}));
 
-    this.layers.push(...imageryLayers);
+    this.cdr.detectChanges();
   }
 
   /**
@@ -172,12 +170,9 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
     opacity: .5,
     visible: false
   }) {
-    const mapImageLayers = layers.map((l: Layer) => esri.createMapImageLayer({
-      ...options,
-      ...l
-    }));
+    layers.forEach(layer => this.mapImageLayers.push({...layer, ...options}));
 
-    this.layers.push(...mapImageLayers);
+    this.cdr.detectChanges();
   }
 
   /**
@@ -186,12 +181,11 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    *
    * @publicApi
    */
-  public async clearAllLayers() {
-    if (this.map) {
-      this.map.layers.removeAll();
-    }
-
-    await this.destroyAllLayers();
+  public clearAllLayers() {
+    this.serverLayers = [];
+    this.featureLayers = [];
+    this.imageryLayers = [];
+    this.mapImageLayers = [];
   }
 
   /**
@@ -200,48 +194,8 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    *
    * @publicApi
    */
-  public async initMap(options: MapOptions): Promise<void> {
-    this.destroyMap();
-
-    const {latitude, longitude, zoom} = options;
-    let layers;
-    try {
-      layers = await Promise.all(this.layers);
-    } catch (error) {
-      console.error('An error happened while resolving layers');
-    }
-
-    this.map = await esri.createMap({
-      basemap: 'streets',
-      layers
-    });
-
-    this.mapView = await esri.createMapView({
-      container: this.mapElement.nativeElement,
-      map: this.map,
-      zoom: zoom || 16,
-      center: {longitude, latitude}
-    });
-
-    await this.mapView.when();
-
-    this.initBasemapGallery().catch(noop);
-    this.initLayersList().catch(noop);
-
-    this.createMapListener('click', event => {
-      if (event.button === 2) {
-        this.onRightClick(event);
-      }
-    });
-    this.createMapListener('double-click', event => this.onDoubleClick(event));
-
-    if (options.scaleBar) {
-      this.initScaleBar(options.scaleBarProps).catch(noop);
-    }
-
-    if (options.homeButton) {
-      this.initHomeButton(options.homeButtonProps).catch(noop);
-    }
+  public initMap(options: MapOptions): Promise<void> {
+    return this.ngEsriMap.initMap(options);
   }
 
   /**
@@ -252,23 +206,8 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    *
    * @publicApi
    */
-  public async setMainPoint(options: PointOptions) {
-    this.removeMainGraphic();
-
-    const {latitude, longitude} = options;
-
-    let popupTemplate: __esri.PopupTemplateProperties;
-    if (options.popupTemplate) {
-      popupTemplate = {
-        title: options.popupTemplate.title,
-        content: options.popupTemplate.content,
-        actions: this.toActions(options.popupTemplate.actions)
-      };
-    }
-
-    this.mainGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
-
-    this.addGraphic(this.mainGraphic);
+  public setMainPoint(options: PointOptions) {
+    return this.ngEsriMap.setMainPoint(options);
   }
 
   /**
@@ -278,9 +217,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    * @publicApi
    */
   public removeMainGraphic() {
-    this.removeGraphic(this.mainGraphic);
-
-    this.mainGraphic = null;
+    return this.ngEsriMap.removeMainGraphic();
   }
 
   /**
@@ -291,23 +228,8 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    *
    * @publicApi
    */
-  public async setSecondaryGraphic(options: PointOptions) {
-    this.removeSecondaryGraphic();
-
-    const {latitude, longitude} = options;
-
-    let popupTemplate: __esri.PopupTemplateProperties;
-    if (options.popupTemplate) {
-      popupTemplate = {
-        title: options.popupTemplate.title,
-        content: options.popupTemplate.content,
-        actions: this.toActions(options.popupTemplate.actions)
-      };
-    }
-
-    this.secondaryGraphic = await esri.createPoint(latitude, longitude, popupTemplate);
-
-    this.addGraphic(this.secondaryGraphic);
+  public setSecondaryGraphic(options: PointOptions) {
+    return this.ngEsriMap.setSecondaryGraphic(options);
   }
 
   /**
@@ -317,9 +239,7 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    * @publicApi
    */
   public removeSecondaryGraphic() {
-    this.removeGraphic(this.secondaryGraphic);
-
-    this.secondaryGraphic = null;
+    return this.ngEsriMap.removeSecondaryGraphic();
   }
 
   /**
@@ -328,29 +248,8 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
    *
    * @publicApi
    */
-  public async createPopup(options: PopupOptions) {
-    this.clearPopup();
-
-    const {latitude, longitude} = options.location;
-
-    if (!options.actions) {
-      options.actions = [];
-    }
-
-    const point = await esri.createPoint(latitude, longitude, {
-      title: options.title,
-      content: options.content,
-      actions: this.toActions(options.actions)
-    });
-
-    this.mapView.popup.open({
-      location: point.geometry,
-      features: [point]
-    });
-
-    if (options.showPointOnMap) {
-      this.initPopupCleaner(point);
-    }
+  public createPopup(options: PopupOptions) {
+    return this.ngEsriMap.createPopup(options);
   }
 
   /**
@@ -364,137 +263,6 @@ export class NgEsriMapComponent implements AfterViewInit, OnDestroy {
   public createPopupAction(id: string,
                            title: string,
                            callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
-    if (!this.mapView) {
-      return;
-    }
-
-    if (this.actions[id]) {
-      this.actionsListeners[id].remove();
-    }
-
-    this.actions[id] = ({
-      id,
-      title
-    }) as any;
-
-    this.actionsListeners[id] = this.mapView.popup.on('trigger-action', (event: __esri.PopupViewModelTriggerActionEvent) => {
-      if (event.action.id === id) {
-        callback(event);
-      }
-    });
-
-    return id;
-  }
-
-  private async initScaleBar(props: ScaleBarProps = {}) {
-    const position = props.position || 'bottom-right';
-
-    const scaleBar = await esri.createScaleBar({
-      ...props,
-      view: this.mapView
-    });
-
-    this.addWidget(scaleBar, position);
-  }
-
-  private async initHomeButton(props: HomeButtonProps = {}) {
-    const position = props.position || 'top-left';
-
-    const homeButton = await esri.createHomeButton({
-      ...props,
-      view: this.mapView
-    });
-
-    this.addWidget(homeButton, position);
-  }
-
-  private initPopupCleaner(point: __esri.Graphic): void {
-    this.addGraphic(point);
-
-    const subscription = this.mapView.popup.watch('visible', v => this.clearPopup(v));
-
-    this.clearPopup = visible => {
-      if (visible) {
-        return;
-      }
-
-      subscription.remove();
-      this.clearPopup = noop;
-      this.removeGraphic(point);
-    };
-  }
-
-  private toActions(actions: string[]): Array<__esri.ActionButton | __esri.ActionToggle> {
-    if (!actions || !Array.isArray(actions)) {
-      return [];
-    }
-
-    return actions.map(action => this.actions[action]).filter(Boolean);
-  }
-
-  private async destroyAllLayers() {
-    while (this.layers.length) {
-      const layer = await this.layers.pop();
-
-      layer.destroy();
-    }
-  }
-
-  private destroyMap(): void {
-    if (this.mapView && this.map.destroy) {
-      this.map.destroy();
-
-      this.map = null;
-      this.mapView = null;
-    }
-  }
-
-  private async initBasemapGallery(): Promise<void> {
-    const bgExpand = await esri.createBasemapsGallery({
-      view: this.mapView
-    }, {});
-
-    this.addWidget(bgExpand, 'top-left');
-  }
-
-  private async initLayersList(): Promise<void> {
-    const layerList = await esri.createLayersList({
-      view: this.mapView,
-      listItemCreatedFunction: function (event) {
-        const item = event.item;
-        if (item.layer.type !== 'group') {
-          item.panel = {
-            content: 'legend',
-            open: false
-          };
-        }
-      }
-    });
-
-    this.addWidget(layerList, 'top-right');
-  }
-
-  private createMapListener(action: string, callback: (event?: __esri.MapViewClickEvent) => void) {
-    if (this.mapView) {
-      this.mapView.on(action, callback);
-    }
-  }
-
-  private addWidget(widget: __esri.Widget, position: string) {
-    if (this.mapView) {
-      this.mapView.ui.add(widget, position);
-    }
-  }
-
-  private addGraphic(graphic: __esri.Graphic) {
-    if (this.mapView) {
-      this.mapView.graphics.add(graphic);
-    }
-  }
-
-  private removeGraphic(graphic: __esri.Graphic) {
-    if (this.mapView) {
-      this.mapView.graphics.remove(graphic);
-    }
+    return this.ngEsriMap.createPopupAction(id, title, callback);
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Layer } from 'ng-esri-map';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +11,13 @@ export class AppComponent {
     public options = {
       latitude:  44.95648,
       longitude: -93.261678,
-      layers: [{
-        url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'
-      }],
+      layers: [],
       scaleBar: true,
       homeButton: true
     };
+    public layers: Layer[] = [{
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'
+    }];
 
     public updateCoordinates({latitude, longitude}) {
       this.options = {

@@ -10,7 +10,7 @@ p {
 
 .container {
   display: flex;
-  height: 75vh;
+  height: 100%;
 }
 
 .map {
