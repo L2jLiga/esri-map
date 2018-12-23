@@ -2,99 +2,79 @@
 import { loadModules } from 'esri-loader';
 import { HomeButtonProps, Layer, ScaleBarProps } from '../models';
 
-export async function createLayersList(properties?: __esri.LayerListProperties): Promise<__esri.LayerList> {
-  const [LayerList] = await loadModules(['esri/widgets/LayerList']);
-
-  return new LayerList(properties);
+export function createLayersList(properties?: __esri.LayerListProperties): Promise<__esri.LayerList> {
+  return loadModules(['esri/widgets/LayerList'])
+    .then(([LayerList]) => new LayerList(properties));
 }
 
-export async function createMap(
-  props: __esri.MapProperties
+export function createMap(
+  properties: __esri.MapProperties
 ): Promise<__esri.Map> {
-  const [Map] = await loadModules([
-    'esri/Map'
-  ]);
-
-  return new Map(props);
+  return loadModules(['esri/Map'])
+    .then(([Map]) => new Map(properties));
 }
 
-export async function createMapView(
-  props: __esri.MapViewProperties
+export function createMapView(
+  properties: __esri.MapViewProperties
 ): Promise<__esri.MapView> {
-  const [MapView] = await loadModules([
-    'esri/views/MapView'
-  ]);
-
-  return new MapView(props);
+  return loadModules(['esri/views/MapView'])
+    .then(([MapView]) => new MapView(properties));
 }
 
-export async function createBasemapsGallery(
+export function createBasemapsGallery(
   galleryProperties: __esri.BasemapGalleryProperties,
   expandPropertis: __esri.ExpandProperties
 ): Promise<__esri.Expand> {
-  const [Expand, BasemapGallery] = await loadModules([
+  return loadModules([
     'esri/widgets/Expand',
     'esri/widgets/BasemapGallery'
-  ]);
-  galleryProperties.container = document.createElement('div');
-  const gallery = new BasemapGallery(galleryProperties);
-  expandPropertis.content = gallery.domNode;
+  ]).then(([Expand, BasemapGallery]) => {
+    galleryProperties.container = document.createElement('div');
+    const gallery = new BasemapGallery(galleryProperties);
+    expandPropertis.content = gallery.domNode;
 
-  return new Expand(expandPropertis);
-}
-
-export async function createGraphic(
-  graphicProps?: __esri.GraphicProperties
-): Promise<__esri.Graphic> {
-  const [Graphic] = await loadModules([
-    'esri/Graphic'
-  ]);
-  return new Graphic(graphicProps);
-}
-
-export async function layerFromArcGISServerUrlParams(url: string, properties: any): Promise<__esri.Layer> {
-  const [esriLayer] = await loadModules([
-    'esri/layers/Layer'
-  ]);
-
-  return esriLayer.fromArcGISServerUrl({
-    url,
-    properties
+    return new Expand(expandPropertis);
   });
 }
 
-export async function createLayer(
+export function createGraphic(
+  graphicProps?: __esri.GraphicProperties
+): Promise<__esri.Graphic> {
+  return loadModules(['esri/Graphic'])
+    .then(([Graphic]) => new Graphic(graphicProps));
+}
+
+export function layerFromArcGISServerUrlParams(url: string, properties: any): Promise<__esri.Layer> {
+  return loadModules(['esri/layers/Layer'])
+    .then(([esriLayer]) => esriLayer.fromArcGISServerUrl({
+      url,
+      properties
+    }));
+}
+
+export function createLayer<T extends __esri.Layer>(
   type: string,
-  props: Layer
-): Promise<__esri.Layer> {
-  const [AnyLayer] = await loadModules([
-    'esri/layers/' + type
-  ]);
-
-  return new AnyLayer(props);
+  properties: Layer
+): Promise<T> {
+  return loadModules(['esri/layers/' + type])
+    .then(([esriLayer]) => new esriLayer(properties));
 }
 
-export async function createFeatureLayer(
-  props: Layer
-): Promise<__esri.Layer> {
-    return await createLayer('FeatureLayer', props);
+export function createFeatureLayer(properties: Layer): Promise<__esri.FeatureLayer> {
+  return createLayer('FeatureLayer', properties);
 }
 
-export async function createImageryLayer(
-  props: Layer
-): Promise<__esri.Layer> {
-  return await createLayer('ImageryLayer', props);
+export function createImageryLayer(properties: Layer): Promise<__esri.ImageryLayer> {
+  return createLayer('ImageryLayer', properties);
 }
 
-export async function createMapImageLayer(
-  props: Layer
-): Promise<__esri.Layer> {
-  return await createLayer('MapImageLayer', props);
+export function createMapImageLayer(properties: Layer): Promise<__esri.MapImageLayer> {
+  return createLayer('MapImageLayer', properties);
 }
 
-export async function createPoint(latitude: number,
-                                  longitude: number,
-                                  popupTemplate?: __esri.PopupTemplateProperties
+export function createPoint(latitude: number,
+                            longitude: number,
+                            popupTemplate?: __esri.PopupTemplateProperties
 ): Promise<__esri.Graphic> {
   const geometry: any = {
     type: 'point', // autocasts as new Point()
@@ -111,25 +91,19 @@ export async function createPoint(latitude: number,
     }
   };
 
-  return await createGraphic({
+  return createGraphic({
     geometry,
     symbol,
     popupTemplate
   });
 }
 
-export async function createScaleBar(props: ScaleBarProps): Promise<__esri.ScaleBar> {
-  const [ScaleBar] = await loadModules([
-    'esri/widgets/ScaleBar'
-  ]);
-
-  return new ScaleBar(props);
+export function createScaleBar(properties: ScaleBarProps): Promise<__esri.ScaleBar> {
+  return loadModules(['esri/widgets/ScaleBar'])
+    .then(([ScaleBar]) => new ScaleBar(properties));
 }
 
-export async function createHomeButton(props: HomeButtonProps): Promise<__esri.Home> {
-  const [Home] = await loadModules([
-    'esri/widgets/Home'
-  ]);
-
-  return new Home(props);
+export function createHomeButton(properties: HomeButtonProps): Promise<__esri.Home> {
+  return loadModules(['esri/widgets/Home'])
+    .then(([Home]) => new Home(properties));
 }
