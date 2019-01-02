@@ -122,6 +122,8 @@ export class NgEsriMapComponent implements AfterViewInit {
     opacity: .5,
     visible: false
   }) {
+    if (!layers) { return; }
+
     layers.forEach(layer => this.serverLayers.push({...layer, ...options}));
 
     this.cdr.detectChanges();
@@ -138,6 +140,8 @@ export class NgEsriMapComponent implements AfterViewInit {
     opacity: .5,
     visible: false
   }) {
+    if (!layers) { return; }
+
     layers.forEach(layer => this.featureLayers.push({...layer, ...options}));
 
     this.cdr.detectChanges();
@@ -154,6 +158,8 @@ export class NgEsriMapComponent implements AfterViewInit {
     opacity: .5,
     visible: false
   }) {
+    if (!layers) { return; }
+
     layers.forEach(layer => this.imageryLayers.push({...layer, ...options}));
 
     this.cdr.detectChanges();
@@ -170,6 +176,8 @@ export class NgEsriMapComponent implements AfterViewInit {
     opacity: .5,
     visible: false
   }) {
+    if (!layers) { return; }
+
     layers.forEach(layer => this.mapImageLayers.push({...layer, ...options}));
 
     this.cdr.detectChanges();

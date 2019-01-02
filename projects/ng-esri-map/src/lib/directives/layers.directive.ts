@@ -43,6 +43,7 @@ export class LayersDirective<T extends __esri.Layer> implements OnDestroy {
       .pipe(
         filter(Boolean),
         map(() => this.destroyAllLayers()),
+        filter(() => Boolean(layers)),
         map(() => this.buildLayers(layers)),
         switchMap(() => this.addLayersToMap()),
         takeUntil(this.newLayers$)
