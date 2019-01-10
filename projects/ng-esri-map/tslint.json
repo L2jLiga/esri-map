@@ -1,17 +1,17 @@
 {
-    "extends": "../../tslint.json",
-    "rules": {
-        "directive-selector": [
-            true,
-            "attribute",
-            "ngEsri",
-            "camelCase"
-        ],
-        "component-selector": [
-            true,
-            "element",
-            "ng-esri",
-            "kebab-case"
-        ]
-    }
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [
+      true,
+      "attribute",
+      "ngEsri",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "ng-esri",
+      "kebab-case"
+    ]
+  }
 }

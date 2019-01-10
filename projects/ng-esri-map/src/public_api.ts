@@ -1,6 +1,4 @@
-/**
- * @module
- * @description
+/*
  * Public API Surface of ng-esri-map
  */
 
