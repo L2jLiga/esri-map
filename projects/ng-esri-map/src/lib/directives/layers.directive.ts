@@ -1,7 +1,7 @@
 /// <reference types="arcgis-js-api" />
 import { Host, Input, OnDestroy, Self } from '@angular/core';
 import { noop, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Layer, LayerOptions } from '../models';
 import { EsriMapDirective } from './esri-map.directive';
 
@@ -42,15 +42,18 @@ export class LayersDirective<T extends __esri.Layer> implements OnDestroy {
     this.mapDirective.mapInstance$
       .pipe(
         filter(Boolean),
-        map(() => this.destroyAllLayers()),
-        filter(() => Boolean(layers)),
+        switchMap(() => this.destroyAllLayers()),
+        filter(() => Array.isArray(layers)),
         map(() => this.buildLayers(layers)),
+        tap(l => this.layers = l),
         switchMap(() => this.addLayersToMap()),
         takeUntil(this.newLayers$)
       ).subscribe(noop, noop);
   }
 
-  protected buildLayers(layers: Layer[]) {}
+  protected buildLayers(layers: Layer[]): Promise<T>[] {
+    return [];
+  }
 
   private addLayersToMap() {
     return Promise.all(this.layers)
@@ -58,9 +61,9 @@ export class LayersDirective<T extends __esri.Layer> implements OnDestroy {
   }
 
   private destroyAllLayers() {
-    while (this.layers.length) {
-      this.layers.pop().then(layer => this.destroyLayer(layer));
-    }
+    return Promise.all(
+      this.layers.map(promise => promise.then(layer => this.destroyLayer(layer)))
+    ).finally(() => this.layers = []);
   }
 
   private destroyLayer(layer: T) {

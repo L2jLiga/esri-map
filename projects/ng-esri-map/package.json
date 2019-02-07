@@ -1,6 +1,6 @@
 {
   "name": "ng-esri-map",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Configurable map component with layers support",
   "keywords": [
     "angular",

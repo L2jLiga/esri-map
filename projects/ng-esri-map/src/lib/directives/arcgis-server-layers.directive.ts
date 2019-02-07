@@ -14,11 +14,9 @@ export class ArcGISServerLayersDirective extends LayersDirective<__esri.Layer> i
   }
 
   buildLayers(layers: Layer[]) {
-    const layersFromArcGISServer = layers.map((l: Layer) => layerFromArcGISServerUrlParams(l.url, {
+    return layers.map((l: Layer) => layerFromArcGISServerUrlParams(l.url, {
       ...this.options,
       ...l
     }));
-
-    this.layers.push(...layersFromArcGISServer);
   }
 }

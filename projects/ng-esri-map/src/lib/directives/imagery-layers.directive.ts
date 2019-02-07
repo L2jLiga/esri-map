@@ -14,11 +14,9 @@ export class ImageryLayersDirective extends LayersDirective<__esri.ImageryLayer>
   }
 
   buildLayers(imageryLayers: Layer[]) {
-    const layers = imageryLayers.map((l: Layer) => createImageryLayer({
+    return imageryLayers.map((l: Layer) => createImageryLayer({
       ...this.options,
       ...l
     }));
-
-    this.layers.push(...layers);
   }
 }

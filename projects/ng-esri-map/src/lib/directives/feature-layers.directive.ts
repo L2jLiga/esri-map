@@ -14,11 +14,9 @@ export class FeatureLayersDirective extends LayersDirective<__esri.FeatureLayer>
   }
 
   buildLayers(featureLayers: Layer[]) {
-    const layers = featureLayers.map((l: Layer) => createFeatureLayer({
+    return featureLayers.map((l: Layer) => createFeatureLayer({
       ...this.options,
       ...l
     }));
-
-    this.layers.push(...layers);
   }
 }

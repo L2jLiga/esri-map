@@ -14,11 +14,9 @@ export class MapImageLayersDirective extends LayersDirective<__esri.MapImageLaye
   }
 
   buildLayers(mapImageLayers: Layer[]) {
-    const layers = mapImageLayers.map((l: Layer) => createMapImageLayer({
+    return mapImageLayers.map((l: Layer) => createMapImageLayer({
       ...this.options,
       ...l
     }));
-
-    this.layers.push(...layers);
   }
 }
