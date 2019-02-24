@@ -1,27 +1,49 @@
-# EsriMap
+# NgEsriMap component
+[![npm version](https://badge.fury.io/js/ng-esri-map.svg?colorB=brightgreen)](https://www.npmjs.com/package/ng-esri-map)
+[![npm](https://img.shields.io/npm/dm/ng-esri-map.svg?colorB=brightgreen)](https://www.npmjs.com/package/ng-esri-map)
+[![node](https://img.shields.io/node/v/ng-esri-map.svg?colorB=brightgreen)](https://www.npmjs.com/package/ng-esri-map)
+[![Dependency Status](https://img.shields.io/david/L2jLiga/esri-map.svg)](https://david-dm.org/L2jLiga/esri-map)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/L2jLiga/esri-map/blob/master/LICENSE)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.1.
+Easy to use component which helps to integrate and control ESRI map inside your Angular application
 
-## Development server
+## Life example
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+You can find [here](https://l2jliga.github.io/esri-map)
 
-## Code scaffolding
+## Basic usage
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Import `NgEsriMapModule` inside your Application
+1. Insert map component into template like this:
+   ```html
+   <div #myMap="ngEsriMap"
+        ngEsriMap
+        [ngEsriMapImageLayers]="layers"
+   ></div>
+   ```
+1. Control map inside your component:
+   ```typescript
+   import { Component, ViewChild } from '@angular/core';
+   import { EsriMapDirective, Layer } from 'ng-esri-map';
+   
+   @Component({
+     selector: 'my-map',
+     templateUrl: './my-map.component.html',
+     styleUrls: ['./my-map.component.css']
+   })
+   export class MyMapComponent {
+     public layers: Layer[] = [
+       {
+         url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'
+       }
+     ];
+     @ViewChild('myMap') private myMap: EsriMapDirective;
 
-## Build
+     public ngOnInit() {
+       this.myMap.initMap({latitude: 1, longitude: 2});
+     }
+   }
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Advanced usage
+You can find an [example](https://github.com/L2jLiga/esri-map/blob/master/src/app/app.component.ts)
