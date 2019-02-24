@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.2.3]
+### Added
+- [MIT License](LICENSE)
+
+# Changed
+- Rebuild with latest CLI
+- Adjusted peer dependencies to match Angular 8.x beta
+
 ## [2.2.2]
 ### Fixed
 - Clean up layers list when new layers come
@@ -84,7 +92,8 @@ Implemented APIs thought component
 
 ## [1.0.0] - Initial release
 
-[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v2.2.2...HEAD
+[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v2.2.3...HEAD
+[2.2.3]: https://github.com/L2jLiga/esri-map/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/L2jLiga/esri-map/compare/v2.2.1...v2.2.2
 [2.2.1]: https://github.com/L2jLiga/esri-map/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/L2jLiga/esri-map/compare/v2.1.3...v2.2.0
