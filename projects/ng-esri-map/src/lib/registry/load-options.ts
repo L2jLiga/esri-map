@@ -8,7 +8,7 @@
 
 import { ILoadScriptOptions } from 'esri-loader';
 
-const arcgisJsApi = 'https://js.arcgis.com/4.10';
+const arcgisJsApi = 'https://js.arcgis.com/4.11';
 export const loadOptions: ILoadScriptOptions = {
   url: `${arcgisJsApi}/init.js`,
   css: `${arcgisJsApi}/esri/css/main.css`,
