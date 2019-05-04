@@ -1,6 +1,6 @@
 {
   "name": "ng-esri-map",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Configurable map component with layers support",
   "keywords": [
     "angular",
@@ -14,11 +14,11 @@
   "license": "MIT",
   "homepage": "https://github.com/L2jLiga/esri-map/tree/master/projects/ng-esri-map#ngesrimap-component",
   "dependencies": {
-    "@types/arcgis-js-api": "^4.11.0",
+    "@types/arcgis-js-api": "~4.11.0",
     "esri-loader": "^2.9.2"
   },
   "peerDependencies": {
-    "@angular/common": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0-rc.0 || ^7.0.0 || ^8.0.0-rc.0",
-    "@angular/core": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0-rc.0 || ^7.0.0 || ^8.0.0-rc.0"
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0-rc.0 || ^7.0.0 || ^8.0.0-rc.0 || ^8.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0-rc.0 || ^7.0.0 || ^8.0.0-rc.0 || ^8.0.0"
   }
 }
