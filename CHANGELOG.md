@@ -5,14 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [2.2.5]
+## [2.2.5-4.9]
 ### Changed
-- Updated typings for argis js api to 4.11 to match current ArcGIS version
+- Pinned typings for argis js api to 4.9 to match current ArcGIS version
 - Added Angular 8 to peer dependencies
 
-## [2.2.4]
-### Changed
-- Updated ArcGIS API to 4.11
+## [2.2.4-4.9]
+### Fixed
+- Rollback ArcGIS API to 4.9 to prevent broken map in Chrome w/o hardware acceleration
 
 ## [2.2.3]
 ### Added
@@ -101,9 +101,9 @@ Implemented APIs thought component
 
 ## [1.0.0] - Initial release
 
-[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v2.2.5...HEAD
-[2.2.5]: https://github.com/L2jLiga/esri-map/compare/v2.2.4...v2.2.5
-[2.2.4]: https://github.com/L2jLiga/esri-map/compare/v2.2.3...v2.2.4
+[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v2.2.5-4.9...HEAD
+[2.2.5-4.9]: https://github.com/L2jLiga/esri-map/compare/v2.2.4-4.9...v2.2.5-4.9
+[2.2.4-4.9]: https://github.com/L2jLiga/esri-map/compare/v2.2.3...v2.2.4-4.9
 [2.2.3]: https://github.com/L2jLiga/esri-map/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/L2jLiga/esri-map/compare/v2.2.1...v2.2.2
 [2.2.1]: https://github.com/L2jLiga/esri-map/compare/v2.2.0...v2.2.1
