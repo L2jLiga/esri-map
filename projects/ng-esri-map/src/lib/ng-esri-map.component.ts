@@ -81,7 +81,7 @@ export class NgEsriMapComponent implements AfterViewInit {
   public mapImageLayers: Layer[] = [];
   public serverLayers: Layer[] = [];
 
-  @ViewChild('ngEsriMap') private ngEsriMap: EsriMapDirective;
+  @ViewChild('ngEsriMap', { static: true }) private ngEsriMap: EsriMapDirective;
 
   public get onRightClick() {
     return this.ngEsriMap.onRightClick;

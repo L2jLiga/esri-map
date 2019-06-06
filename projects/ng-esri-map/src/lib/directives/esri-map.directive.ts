@@ -21,7 +21,6 @@ import {
 } from '../helpers';
 import { HomeButtonProps, MapOptions, PointOptions, PopupOptions, ScaleBarProps } from '../models';
 import { loadOptions } from '../registry';
-import GoToParameters = __esri.GoToParameters;
 
 /**
  * @ngModule NgEsriMapModule
