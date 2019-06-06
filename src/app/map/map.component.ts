@@ -15,7 +15,7 @@ import { NgEsriMapComponent } from 'ng-esri-map';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent {
-  @ViewChild('map') public map: NgEsriMapComponent;
+  @ViewChild('map', { static: true }) public map: NgEsriMapComponent;
   @Input() public set options(options) {
     const {scaleBar, homeButton} = this.prevOptions;
 

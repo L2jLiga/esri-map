@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://github.com/L2jLiga/esri-map/blob/master/LICENSE
  */
 
+/// <reference types="arcgis-js-api" />
 import ScaleBarProperties = __esri.ScaleBarProperties;
 
 export interface ScaleBarProps extends ScaleBarProperties {
