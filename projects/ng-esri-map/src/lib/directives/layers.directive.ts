@@ -18,7 +18,7 @@ const defaultOptions = {
   visible: false
 };
 
-export class LayersDirective<T extends __esri.Layer> implements OnDestroy {
+export abstract class LayersDirective<T extends __esri.Layer> implements OnDestroy {
   protected layers: Promise<T>[] = [];
   private newLayers$: Subject<void> = new Subject();
 
@@ -51,7 +51,7 @@ export class LayersDirective<T extends __esri.Layer> implements OnDestroy {
       .pipe(
         filter(Boolean),
         switchMap(() => this.destroyAllLayers()),
-        filter(() => Array.isArray(layers)),
+        filter(Array.isArray),
         map(() => this.buildLayers(layers)),
         tap(l => this.layers = l),
         switchMap(() => this.addLayersToMap()),
@@ -59,9 +59,7 @@ export class LayersDirective<T extends __esri.Layer> implements OnDestroy {
       ).subscribe(noop, noop);
   }
 
-  protected buildLayers(layers: Layer[]): Promise<T>[] {
-    return [];
-  }
+  protected abstract buildLayers(layers: Layer[]): Promise<T>[];
 
   private addLayersToMap() {
     return Promise.all(this.layers)
