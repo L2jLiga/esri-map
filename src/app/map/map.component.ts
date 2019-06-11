@@ -7,7 +7,7 @@
  */
 
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgEsriMapComponent } from 'ng-esri-map';
+import { EsriMapDirective } from 'ng-esri-map';
 
 @Component({
   selector: 'app-map',
@@ -15,7 +15,7 @@ import { NgEsriMapComponent } from 'ng-esri-map';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent {
-  @ViewChild('map', { static: true }) public map: NgEsriMapComponent;
+  @ViewChild('map', { static: true }) public map: EsriMapDirective;
   @Input() public set options(options) {
     const {scaleBar, homeButton} = this.prevOptions;
 
@@ -29,9 +29,7 @@ export class MapComponent {
 
     this.prevOptions = options;
   }
-  @Input() public set layers(layers) {
-    this.rebuildAllLayers(layers);
-  }
+  @Input() public layers;
   @Output() public pointSelected: EventEmitter<any> = new EventEmitter();
 
   private prevOptions: any = {};
@@ -67,15 +65,9 @@ export class MapComponent {
     this.map.mapView.goTo(this.map.mainGraphic);
   }
 
-  private rebuildAllLayers(layers) {
-    this.map.clearAllLayers();
-
-    this.map.buildMapImageLayersList(layers);
-  }
-
   private createActions() {
     this.map.createPopupAction('select-point', 'Select point', event => {
-      // TODO: Why ESRI typing not fully correct?
+      // TODO: ArcGIS JS API typing is not correct
       const {latitude, longitude} = (event as any).target.selectedFeature.geometry;
 
       this.pointSelected.emit({latitude, longitude});

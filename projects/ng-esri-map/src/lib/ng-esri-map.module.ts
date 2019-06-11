@@ -12,7 +12,6 @@ import { EsriMapDirective } from './directives/esri-map.directive';
 import { FeatureLayersDirective } from './directives/feature-layers.directive';
 import { ImageryLayersDirective } from './directives/imagery-layers.directive';
 import { MapImageLayersDirective } from './directives/map-image-layers.directive';
-import { NgEsriMapComponent } from './ng-esri-map.component';
 
 /**
  * Export all module methods required to correct work
@@ -22,7 +21,6 @@ import { NgEsriMapComponent } from './ng-esri-map.component';
 @NgModule({
   imports: [],
   declarations: [
-    NgEsriMapComponent,
     EsriMapDirective,
     ArcGISServerLayersDirective,
     FeatureLayersDirective,
@@ -30,7 +28,6 @@ import { NgEsriMapComponent } from './ng-esri-map.component';
     ImageryLayersDirective
   ],
   exports: [
-    NgEsriMapComponent,
     EsriMapDirective,
     ArcGISServerLayersDirective,
     FeatureLayersDirective,
