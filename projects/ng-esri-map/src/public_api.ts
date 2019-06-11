@@ -7,7 +7,6 @@
  */
 
 export * from './lib/models';
-export { NgEsriMapComponent } from './lib/ng-esri-map.component';
 export { EsriMapDirective } from './lib/directives/esri-map.directive';
 export { ArcGISServerLayersDirective } from './lib/directives/arcgis-server-layers.directive';
 export { FeatureLayersDirective } from './lib/directives/feature-layers.directive';
