@@ -103,5 +103,9 @@
       }
     }
   },
+  "cli": {
+    "analytics": false,
+    "packageManager": "npm"
+  },
   "defaultProject": "esri-map"
 }
