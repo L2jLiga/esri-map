@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ## [3.0.0]
+### Added
+- `createPoint` public method
+
+### Changed
+- `addGraphic` and `removeGraphic` now public
+- Allow to define GoToOverride in home button options
+- updated methods description
+
 ### Removed
 - ng-esri-map component
 - Support for Angular <8

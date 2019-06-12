@@ -61,11 +61,11 @@ export class EsriMapDirective implements OnDestroy {
   public mainGraphic: __esri.Graphic;
   public secondaryGraphic: __esri.Graphic;
   public mapInstance$: ReplaySubject<boolean> = new ReplaySubject();
-  protected actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
-  protected actionsListeners: { [action: string]: { remove: () => void } } = {};
-  protected clearPopup: (v?: boolean) => void = noop;
+  private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
+  private actionsListeners: { [action: string]: { remove: () => void } } = {};
+  private clearPopup: (v?: boolean) => void = noop;
 
-  constructor(protected elRef: ElementRef) {
+  constructor(private elRef: ElementRef) {
     if (!isLoaded()) {
       loadScript(loadOptions);
     }
@@ -122,34 +122,22 @@ export class EsriMapDirective implements OnDestroy {
 
   /**
    * @description
-   * Put main point on the map
-   * BTW on map can exists only two points (just an restriction of current component)
-   * Each usage of this method will replace previous one
+   * Puts main point on the map
+   * Each new point created and added to map by this method will replace previously created.
    *
    * @publicApi
    */
   public async setMainPoint(options: PointOptions) {
     this.removeMainGraphic();
 
-    const {latitude, longitude} = options;
-
-    let popupTemplate: __esri.PopupTemplateProperties;
-    if (options.popupTemplate) {
-      popupTemplate = {
-        title: options.popupTemplate.title,
-        content: options.popupTemplate.content,
-        actions: this.toActions(options.popupTemplate.actions)
-      };
-    }
-
-    this.mainGraphic = await createPoint(latitude, longitude, popupTemplate);
+    this.mainGraphic = await this.createPoint(options);
 
     this.addGraphic(this.mainGraphic);
   }
 
   /**
    * @description
-   * Remove main graphic from the map
+   * Removes main graphic from the map
    *
    * @publicApi
    */
@@ -161,34 +149,22 @@ export class EsriMapDirective implements OnDestroy {
 
   /**
    * @description
-   * Put secondary point on the map
-   * BTW on map can exists only two points (just an restriction of current component)
-   * Each usage of this method will replace previous one
+   * Puts secondary point on the map
+   * Each new point created and added to map by this method will replace previously created.
    *
    * @publicApi
    */
   public async setSecondaryGraphic(options: PointOptions) {
     this.removeSecondaryGraphic();
 
-    const {latitude, longitude} = options;
-
-    let popupTemplate: __esri.PopupTemplateProperties;
-    if (options.popupTemplate) {
-      popupTemplate = {
-        title: options.popupTemplate.title,
-        content: options.popupTemplate.content,
-        actions: this.toActions(options.popupTemplate.actions)
-      };
-    }
-
-    this.secondaryGraphic = await createPoint(latitude, longitude, popupTemplate);
+    this.secondaryGraphic = await this.createPoint(options);
 
     this.addGraphic(this.secondaryGraphic);
   }
 
   /**
    * @description
-   * Remove secondary graphic from the map
+   * Removes secondary graphic from the map
    *
    * @publicApi
    */
@@ -200,7 +176,50 @@ export class EsriMapDirective implements OnDestroy {
 
   /**
    * @description
-   * Create popup in given location with given title, content and actions list
+   * Creates point with given options
+   *
+   * @publicApi
+   */
+  public async createPoint(options: PointOptions) {
+    const {latitude, longitude} = options;
+
+    let popupTemplate: __esri.PopupTemplateProperties;
+    if (options.popupTemplate) {
+      popupTemplate = {
+        title: options.popupTemplate.title,
+        content: options.popupTemplate.content,
+        actions: this.toActions(options.popupTemplate.actions)
+      };
+    }
+
+    return await createPoint(latitude, longitude, popupTemplate);
+  }
+
+  /**
+   * @description
+   * Adds given graphic to the map if it created
+   *
+   * @publicApi
+   */
+  public addGraphic(graphic: __esri.Graphic) {
+    if (this.mapView) {
+      this.mapView.graphics.add(graphic);
+    }
+  }
+
+  /**
+   * Removes given graphic from the map
+   *
+   * @publicApi
+   */
+  public removeGraphic(graphic: __esri.Graphic) {
+    if (this.mapView) {
+      this.mapView.graphics.remove(graphic);
+    }
+  }
+  /**
+   * @description
+   * Creates popup in given location with given title, content and actions list
    *
    * @publicApi
    */
@@ -231,7 +250,7 @@ export class EsriMapDirective implements OnDestroy {
 
   /**
    * @description
-   * Create actions which can be added to popup
+   * Creates actions which can be added to popup
    * If action with given ID already exists then it will replace it
    * If map was destroyed then return void
    *
@@ -262,7 +281,7 @@ export class EsriMapDirective implements OnDestroy {
     return id;
   }
 
-  protected async initScaleBar(props: ScaleBarProps = {}) {
+  private async initScaleBar(props: ScaleBarProps = {}) {
     const position = props.position || 'bottom-right';
 
     const scaleBar = await createScaleBar({
@@ -273,11 +292,10 @@ export class EsriMapDirective implements OnDestroy {
     this.addWidget(scaleBar, position);
   }
 
-  protected async initHomeButton(props: HomeButtonProps = {}) {
+  private async initHomeButton(props: HomeButtonProps = {}) {
     const position = props.position || 'top-left';
 
     const homeButton = await createHomeButton({
-      ...props,
       view: this.mapView,
       goToOverride: (view: __esri.MapView, params: __esri.GoToParameters) => {
         const scale = params.target.scale;
@@ -289,13 +307,14 @@ export class EsriMapDirective implements OnDestroy {
 
         // @ts-ignore
         return view.goTo({center, scale});
-      }
+      },
+      ...props
     });
 
     this.addWidget(homeButton, position);
   }
 
-  protected initPopupCleaner(point: __esri.Graphic): void {
+  private initPopupCleaner(point: __esri.Graphic): void {
     this.addGraphic(point);
 
     const subscription = this.mapView.popup.watch('visible', v => this.clearPopup(v));
@@ -311,7 +330,7 @@ export class EsriMapDirective implements OnDestroy {
     };
   }
 
-  protected toActions(actions: string[]): Array<__esri.ActionButton | __esri.ActionToggle> {
+  private toActions(actions: string[]): Array<__esri.ActionButton | __esri.ActionToggle> {
     if (!actions || !Array.isArray(actions)) {
       return [];
     }
@@ -319,7 +338,7 @@ export class EsriMapDirective implements OnDestroy {
     return actions.map(action => this.actions[action]).filter(Boolean);
   }
 
-  protected destroyMap(): void {
+  private destroyMap(): void {
     if (this.mapView && this.map.destroy) {
       this.map.destroy();
       this.mapInstance$.next(false);
@@ -329,7 +348,7 @@ export class EsriMapDirective implements OnDestroy {
     }
   }
 
-  protected async initBasemapGallery(): Promise<void> {
+  private async initBasemapGallery(): Promise<void> {
     const bgExpand = await createBasemapsGallery({
       view: this.mapView
     }, {});
@@ -337,7 +356,7 @@ export class EsriMapDirective implements OnDestroy {
     this.addWidget(bgExpand, 'top-left');
   }
 
-  protected async initLayersList(): Promise<void> {
+  private async initLayersList(): Promise<void> {
     const layerList = await createLayersList({
       view: this.mapView,
       listItemCreatedFunction: function (event) {
@@ -354,27 +373,15 @@ export class EsriMapDirective implements OnDestroy {
     this.addWidget(layerList, 'top-right');
   }
 
-  protected createMapListener(action: string, callback: (event?: __esri.MapViewClickEvent) => void) {
+  private createMapListener(action: string, callback: (event?: __esri.MapViewClickEvent) => void) {
     if (this.mapView) {
       this.mapView.on(action, callback);
     }
   }
 
-  protected addWidget(widget: __esri.Widget, position: string) {
+  private addWidget(widget: __esri.Widget, position: string) {
     if (this.mapView) {
       this.mapView.ui.add(widget, position);
-    }
-  }
-
-  protected addGraphic(graphic: __esri.Graphic) {
-    if (this.mapView) {
-      this.mapView.graphics.add(graphic);
-    }
-  }
-
-  protected removeGraphic(graphic: __esri.Graphic) {
-    if (this.mapView) {
-      this.mapView.graphics.remove(graphic);
     }
   }
 }
