@@ -10,12 +10,12 @@
 import { Directive, Input, OnDestroy } from '@angular/core';
 import { createMapImageLayer } from '../helpers';
 import { Layer } from '../models';
-import { LayersDirective } from './layers.directive';
+import { AbstractDirectiveForLayers } from './abstract-directive-for-layers';
 
 @Directive({
   selector: '[ngEsriMapImageLayers]'
 })
-export class MapImageLayersDirective extends LayersDirective<__esri.MapImageLayer> implements OnDestroy {
+export class MapImageLayersDirective extends AbstractDirectiveForLayers<__esri.MapImageLayer> implements OnDestroy {
   @Input()
   public set ngEsriMapImageLayers(layers: Layer[]) {
     this.handleChanges(layers);
