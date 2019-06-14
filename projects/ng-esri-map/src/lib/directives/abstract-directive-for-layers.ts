@@ -18,7 +18,7 @@ const defaultOptions = {
   visible: false
 };
 
-export abstract class LayersDirective<T extends __esri.Layer> implements OnDestroy {
+export abstract class AbstractDirectiveForLayers<T extends __esri.Layer> implements OnDestroy {
   protected layers: Promise<T>[] = [];
   private newLayers$: Subject<void> = new Subject();
 

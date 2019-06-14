@@ -10,12 +10,12 @@
 import { Directive, Input, OnDestroy } from '@angular/core';
 import { layerFromArcGISServerUrlParams } from '../helpers';
 import { Layer } from '../models';
-import { LayersDirective } from './layers.directive';
+import { AbstractDirectiveForLayers } from './abstract-directive-for-layers';
 
 @Directive({
   selector: '[ngEsriArcGISServerLayers]'
 })
-export class ArcGISServerLayersDirective extends LayersDirective<__esri.Layer> implements OnDestroy {
+export class ArcGISServerLayersDirective extends AbstractDirectiveForLayers<__esri.Layer> implements OnDestroy {
   @Input()
   public set ngEsriArcGISServerLayers(layers: Layer[]) {
     this.handleChanges(layers);
