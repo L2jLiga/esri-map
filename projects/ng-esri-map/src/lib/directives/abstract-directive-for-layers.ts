@@ -7,7 +7,7 @@
  */
 
 /// <reference types="arcgis-js-api" />
-import { Host, Input, OnDestroy, Self } from '@angular/core';
+import { Host, Injectable, Input, OnDestroy, Self } from '@angular/core';
 import { noop, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Layer, LayerOptions } from '../models';
@@ -18,6 +18,7 @@ const defaultOptions = {
   visible: false
 };
 
+@Injectable()
 export abstract class AbstractDirectiveForLayers<T extends __esri.Layer> implements OnDestroy {
   protected layers: Promise<T>[] = [];
   private newLayers$: Subject<void> = new Subject();
