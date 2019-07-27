@@ -20,9 +20,9 @@ const defaultOptions = {
 
 // TODO: Remove directive decorator after https://github.com/angular/angular/issues/30080
 @Directive({
-  selector: 'abstract-layers-directive'
+  selector: '[ngEsriBaseLayersDirective]'
 })
-export class AbstractDirectiveForLayers<T extends __esri.Layer> implements OnDestroy {
+export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
   protected layers: Promise<T>[] = [];
   private newLayers$: Subject<void> = new Subject();
 

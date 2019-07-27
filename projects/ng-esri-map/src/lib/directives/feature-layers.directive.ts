@@ -10,12 +10,12 @@
 import { Directive, Input, OnDestroy } from '@angular/core';
 import { createFeatureLayer } from '../helpers';
 import { Layer } from '../models';
-import { AbstractDirectiveForLayers } from './abstract-directive-for-layers';
+import { BaseLayersDirective } from './base-layers.directive';
 
 @Directive({
   selector: '[ngEsriFeatureLayers]'
 })
-export class FeatureLayersDirective extends AbstractDirectiveForLayers<__esri.FeatureLayer> implements OnDestroy {
+export class FeatureLayersDirective extends BaseLayersDirective<__esri.FeatureLayer> implements OnDestroy {
   @Input()
   public set ngEsriFeatureLayers(featureLayers: Layer[]) {
     this.handleChanges(featureLayers);
