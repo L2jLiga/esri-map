@@ -65,7 +65,7 @@ export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
 
   protected buildLayers(layers: Layer[]): Promise<T>[] {
     return [];
-  };
+  }
 
   private addLayersToMap() {
     return Promise.all(this.layers)
