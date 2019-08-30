@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Updated to latest Angular & Angular CLI
+- Updated to latest ng-packagr
+- Updated to TypeScript 3.5
+- Updated to ArcGIS JS API 4.12
+
+### Fixed
+- Library didn't work when built with Ivy
+
 ## [3.0.1]
 ### Fixed
 - inability to use library when Ivy enabled

@@ -1,6 +1,6 @@
 const exec = require('child_process').execSync;
 
-exec('npx rimraf dist node_modules package-lock.json');
+exec('npx rimraf node_modules package-lock.json');
 exec('npm cache clean --force');
 exec('npm install --no-optional');
 exec('npm dedup');
