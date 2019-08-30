@@ -5,11 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [3.0.2-4.9]
 ### Changed
 - Updated to latest Angular & Angular CLI
 - Updated to latest ng-packagr
 - Updated to TypeScript 3.5
-- Updated to ArcGIS JS API 4.12
 
 ### Fixed
 - Library didn't work when built with Ivy
@@ -127,7 +127,8 @@ Implemented APIs thought component
 
 ## [1.0.0] - Initial release
 
-[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v3.0.1-4.9...HEAD
+[Unreleased]: https://github.com/L2jLiga/esri-map/compare/v3.0.2-4.9...HEAD
+[3.0.2-4.9]: https://github.com/L2jLiga/esri-map/compare/v3.0.1-4.9...v3.0.2-4.9
 [3.0.1-4.9]: https://github.com/L2jLiga/esri-map/compare/v3.0.0-4.9...v3.0.1-4.9
 [3.0.0-4.9]: https://github.com/L2jLiga/esri-map/compare/v2.2.5-4.9...v3.0.0-4.9
 [2.2.5-4.9]: https://github.com/L2jLiga/esri-map/compare/v2.2.4-4.9...v2.2.5-4.9
