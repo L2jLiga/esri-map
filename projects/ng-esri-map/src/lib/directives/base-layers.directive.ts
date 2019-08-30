@@ -7,7 +7,7 @@
  */
 
 /// <reference types="arcgis-js-api" />
-import { Host, Input, OnDestroy, Self } from '@angular/core';
+import { Directive, Host, Input, OnDestroy, Self } from '@angular/core';
 import { noop, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Layer, LayerOptions } from '../models';
@@ -18,7 +18,11 @@ const defaultOptions = {
   visible: false
 };
 
-export abstract class AbstractDirectiveForLayers<T extends __esri.Layer> implements OnDestroy {
+// TODO: Remove directive decorator after https://github.com/angular/angular/issues/30080
+@Directive({
+  selector: '[ngEsriBaseLayersDirective]'
+})
+export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
   protected layers: Promise<T>[] = [];
   private newLayers$: Subject<void> = new Subject();
 
@@ -59,7 +63,9 @@ export abstract class AbstractDirectiveForLayers<T extends __esri.Layer> impleme
       ).subscribe(noop, noop);
   }
 
-  protected abstract buildLayers(layers: Layer[]): Promise<T>[];
+  protected buildLayers(layers: Layer[]): Promise<T>[] {
+    return [];
+  }
 
   private addLayersToMap() {
     return Promise.all(this.layers)

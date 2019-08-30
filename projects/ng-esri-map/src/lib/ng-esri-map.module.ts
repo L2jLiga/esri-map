@@ -7,6 +7,7 @@
  */
 
 import { NgModule } from '@angular/core';
+import { BaseLayersDirective } from './directives/base-layers.directive';
 import { ArcGISServerLayersDirective } from './directives/arcgis-server-layers.directive';
 import { EsriMapDirective } from './directives/esri-map.directive';
 import { FeatureLayersDirective } from './directives/feature-layers.directive';
@@ -22,6 +23,7 @@ import { MapImageLayersDirective } from './directives/map-image-layers.directive
   imports: [],
   declarations: [
     EsriMapDirective,
+    BaseLayersDirective,
     ArcGISServerLayersDirective,
     FeatureLayersDirective,
     MapImageLayersDirective,
