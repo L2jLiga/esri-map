@@ -339,13 +339,14 @@ export class EsriMapDirective implements OnDestroy {
   }
 
   private destroyMap(): void {
+    if (this.mapView && this.mapView.destroy) {
+      this.mapView.destroy();
+    }
     if (this.mapView && this.map.destroy) {
       this.map.destroy();
-      this.mapInstance$.next(false);
-
-      this.map = null;
-      this.mapView = null;
     }
+
+    this.mapInstance$.next(false);
   }
 
   private async initBasemapGallery(): Promise<void> {
