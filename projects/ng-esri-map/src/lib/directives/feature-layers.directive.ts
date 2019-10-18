@@ -21,7 +21,7 @@ export class FeatureLayersDirective extends BaseLayersDirective<__esri.FeatureLa
     this.handleChanges(featureLayers);
   }
 
-  buildLayers(featureLayers: Layer[]) {
+  buildLayers(featureLayers: Layer[]): Promise<__esri.FeatureLayer>[] {
     return featureLayers.map((l: Layer) => createFeatureLayer({
       ...this.options,
       ...l

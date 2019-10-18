@@ -21,7 +21,7 @@ export class MapImageLayersDirective extends BaseLayersDirective<__esri.MapImage
     this.handleChanges(layers);
   }
 
-  buildLayers(mapImageLayers: Layer[]) {
+  buildLayers(mapImageLayers: Layer[]): Promise<__esri.MapImageLayer>[] {
     return mapImageLayers.map((l: Layer) => createMapImageLayer({
       ...this.options,
       ...l
