@@ -127,7 +127,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public async setMainPoint(options: PointOptions) {
+  public async setMainPoint(options: PointOptions): Promise<void> {
     this.removeMainGraphic();
 
     this.mainGraphic = await this.createPoint(options);
@@ -141,7 +141,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public removeMainGraphic() {
+  public removeMainGraphic(): void {
     this.removeGraphic(this.mainGraphic);
 
     this.mainGraphic = null;
@@ -154,7 +154,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public async setSecondaryGraphic(options: PointOptions) {
+  public async setSecondaryGraphic(options: PointOptions): Promise<void> {
     this.removeSecondaryGraphic();
 
     this.secondaryGraphic = await this.createPoint(options);
@@ -168,7 +168,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public removeSecondaryGraphic() {
+  public removeSecondaryGraphic(): void {
     this.removeGraphic(this.secondaryGraphic);
 
     this.secondaryGraphic = null;
@@ -180,7 +180,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public async createPoint(options: PointOptions) {
+  public async createPoint(options: PointOptions): Promise<__esri.Graphic> {
     const {latitude, longitude} = options;
 
     let popupTemplate: __esri.PopupTemplateProperties;
@@ -201,7 +201,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public addGraphic(graphic: __esri.Graphic) {
+  public addGraphic(graphic: __esri.Graphic): void {
     if (this.mapView) {
       this.mapView.graphics.add(graphic);
     }
@@ -212,7 +212,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public removeGraphic(graphic: __esri.Graphic) {
+  public removeGraphic(graphic: __esri.Graphic): void {
     if (this.mapView) {
       this.mapView.graphics.remove(graphic);
     }
@@ -223,7 +223,7 @@ export class EsriMapDirective implements OnDestroy {
    *
    * @publicApi
    */
-  public async createPopup(options: PopupOptions) {
+  public async createPopup(options: PopupOptions): Promise<void> {
     this.clearPopup();
 
     const {latitude, longitude} = options.location;
@@ -258,7 +258,7 @@ export class EsriMapDirective implements OnDestroy {
    */
   public createPopupAction(id: string,
                            title: string,
-                           callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void) {
+                           callback: (event?: __esri.PopupViewModelTriggerActionEvent) => void): string {
     if (!this.mapView) {
       return;
     }
@@ -281,7 +281,7 @@ export class EsriMapDirective implements OnDestroy {
     return id;
   }
 
-  private async initScaleBar(props: ScaleBarProps = {}) {
+  private async initScaleBar(props: ScaleBarProps = {}): Promise<void> {
     const position = props.position || 'bottom-right';
 
     const scaleBar = await createScaleBar({
@@ -292,7 +292,7 @@ export class EsriMapDirective implements OnDestroy {
     this.addWidget(scaleBar, position);
   }
 
-  private async initHomeButton(props: HomeButtonProps = {}) {
+  private async initHomeButton(props: HomeButtonProps = {}): Promise<void> {
     const position = props.position || 'top-left';
 
     const homeButton = await createHomeButton({
@@ -342,7 +342,7 @@ export class EsriMapDirective implements OnDestroy {
     if (this.mapView && this.mapView.destroy) {
       this.mapView.destroy();
     }
-    if (this.mapView && this.map.destroy) {
+    if (this.map && this.map.destroy) {
       this.map.destroy();
     }
 
@@ -374,13 +374,13 @@ export class EsriMapDirective implements OnDestroy {
     this.addWidget(layerList, 'top-right');
   }
 
-  private createMapListener(action: string, callback: (event?: __esri.MapViewClickEvent) => void) {
+  private createMapListener(action: string, callback: (event?: __esri.MapViewClickEvent) => void): void {
     if (this.mapView) {
       this.mapView.on(action, callback);
     }
   }
 
-  private addWidget(widget: __esri.Widget, position: string) {
+  private addWidget(widget: __esri.Widget, position: string): void {
     if (this.mapView) {
       this.mapView.ui.add(widget, position);
     }

@@ -21,7 +21,7 @@ export class ImageryLayersDirective extends BaseLayersDirective<__esri.ImageryLa
     this.handleChanges(layers);
   }
 
-  buildLayers(imageryLayers: Layer[]) {
+  buildLayers(imageryLayers: Layer[]): Promise<__esri.ImageryLayer>[] {
     return imageryLayers.map((l: Layer) => createImageryLayer({
       ...this.options,
       ...l

@@ -21,7 +21,7 @@ export class ArcGISServerLayersDirective extends BaseLayersDirective<__esri.Laye
     this.handleChanges(layers);
   }
 
-  buildLayers(layers: Layer[]) {
+  buildLayers(layers: Layer[]): Promise<__esri.Layer>[] {
     return layers.map((l: Layer) => layerFromArcGISServerUrlParams(l.url, {
       ...this.options,
       ...l

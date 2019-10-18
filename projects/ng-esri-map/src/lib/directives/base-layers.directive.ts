@@ -28,7 +28,7 @@ export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
 
   private _options: LayerOptions = defaultOptions;
 
-  public get options() {
+  public get options(): LayerOptions {
     return this._options;
   }
 
@@ -48,7 +48,7 @@ export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
     this.newLayers$.complete();
   }
 
-  protected handleChanges(layers: Layer[]) {
+  protected handleChanges(layers: Layer[]): void {
     this.newLayers$.next();
 
     this.mapDirective.mapInstance$
@@ -67,18 +67,18 @@ export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
     return [];
   }
 
-  private addLayersToMap() {
+  private addLayersToMap(): Promise<void> {
     return Promise.all(this.layers)
       .then(layers => this.mapDirective.map.layers.addMany(layers));
   }
 
-  private destroyAllLayers() {
+  private destroyAllLayers(): Promise<void[]> {
     return Promise.all(
       this.layers.map(promise => promise.then(layer => this.destroyLayer(layer)))
     ).finally(() => this.layers = []);
   }
 
-  private destroyLayer(layer: T) {
+  private destroyLayer(layer: T): void {
     this.mapDirective.map.layers.remove(layer);
     layer.destroy();
   }
