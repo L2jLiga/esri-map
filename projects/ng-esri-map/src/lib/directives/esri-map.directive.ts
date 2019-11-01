@@ -9,16 +9,8 @@
 /// <reference types="arcgis-js-api" />
 import { Directive, ElementRef, OnDestroy } from '@angular/core';
 import { isLoaded, loadScript } from 'esri-loader';
-import { noop, ReplaySubject } from 'rxjs';
-import {
-  createBasemapsGallery,
-  createHomeButton,
-  createLayersList,
-  createMap,
-  createMapView,
-  createPoint,
-  createScaleBar
-} from '../helpers';
+import { BehaviorSubject, noop } from 'rxjs';
+import { createBasemapsGallery, createHomeButton, createLayersList, createMap, createMapView, createPoint, createScaleBar } from '../helpers';
 import { HomeButtonProps, MapOptions, PointOptions, PopupOptions, ScaleBarProps } from '../models';
 import { loadOptions } from '../registry';
 
@@ -60,7 +52,7 @@ export class EsriMapDirective implements OnDestroy {
   public mapView: __esri.MapView;
   public mainGraphic: __esri.Graphic;
   public secondaryGraphic: __esri.Graphic;
-  public mapInstance$: ReplaySubject<boolean> = new ReplaySubject();
+  public mapInstance$ = new BehaviorSubject(false);
   private actions: { [action: string]: __esri.ActionButton | __esri.ActionToggle } = {};
   private actionsListeners: { [action: string]: { remove: () => void } } = {};
   private clearPopup: (v?: boolean) => void = noop;
