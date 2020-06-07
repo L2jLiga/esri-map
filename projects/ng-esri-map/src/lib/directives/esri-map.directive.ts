@@ -12,7 +12,7 @@ import { isLoaded, loadScript } from 'esri-loader';
 import { BehaviorSubject, noop } from 'rxjs';
 import { createBasemapsGallery, createHomeButton, createLayersList, createMap, createMapView, createPoint, createScaleBar } from '../helpers';
 import { HomeButtonProps, MapOptions, PointOptions, PopupOptions, ScaleBarProps } from '../models';
-import { loadOptions } from '../registry';
+import { _LOAD_OPTIONS } from '../registry';
 
 /**
  * @ngModule NgEsriMapModule
@@ -59,7 +59,7 @@ export class EsriMapDirective implements OnDestroy {
 
   constructor(private elRef: ElementRef) {
     if (!isLoaded()) {
-      loadScript(loadOptions);
+      loadScript(_LOAD_OPTIONS);
     }
   }
 
@@ -289,7 +289,7 @@ export class EsriMapDirective implements OnDestroy {
 
     const homeButton = await createHomeButton({
       view: this.mapView,
-      goToOverride: (view: __esri.MapView, params: __esri.GoToParameters) => {
+      goToOverride: (view: __esri.MapView, params: any) => {
         const scale = params.target.scale;
         let center = params.target.targetGeometry;
 

@@ -5,8 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Option to specify ArcGIS JS API version.
+
+### Changed
+- Update JS API version to 4.15 (was 4.11)
+
 ## [4.0.0]
-### Changes
+### Changed
 - Changed `mapInstance$` type of `NgEsriMapComponent` from `ReplaySubject` to `BehaviorSubject`
 
 ## [3.0.3]

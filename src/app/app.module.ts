@@ -23,7 +23,7 @@ import { InputComponent } from './input/input.component';
   imports: [
     BrowserModule,
     FormsModule,
-    NgEsriMapModule
+    NgEsriMapModule.withArcGISVersion('4.15'),
   ],
   providers: [],
   bootstrap: [AppComponent]

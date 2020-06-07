@@ -8,10 +8,15 @@
 
 import { ILoadScriptOptions } from 'esri-loader';
 
-const arcgisJsApi = 'https://js.arcgis.com/4.11';
-export const loadOptions: ILoadScriptOptions = {
-  url: `${arcgisJsApi}/init.js`,
-  css: `${arcgisJsApi}/esri/css/main.css`,
+const baseUrl = 'https://js.arcgis.com';
+export const _LOAD_OPTIONS: ILoadScriptOptions = {
+  version: '4.15',
+  get url() {
+    return `${baseUrl}/${_LOAD_OPTIONS.version}/init.js`;
+  },
+  get css() {
+    return `${baseUrl}/${_LOAD_OPTIONS.version}/esri/css/main.css`;
+  },
   dojoConfig: {
     async: true
   }

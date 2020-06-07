@@ -6,4 +6,4 @@
  * found in the LICENSE file at https://github.com/L2jLiga/esri-map/blob/master/LICENSE
  */
 
-export { loadOptions } from './load-options';
+export { _LOAD_OPTIONS } from './load-options';
