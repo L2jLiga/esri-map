@@ -99,7 +99,7 @@
   },
   "cli": {
     "analytics": false,
-    "packageManager": "npm"
+    "packageManager": "yarn"
   },
   "defaultProject": "esri-map"
 }
