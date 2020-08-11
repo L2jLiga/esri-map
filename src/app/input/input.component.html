@@ -1,4 +1,4 @@
-<input id="latitude"
+<input [id]="label"
        type="text"
        [ngModel]="model"
        [ngModelOptions]="{updateOn: 'blur'}"
@@ -6,4 +6,4 @@
        required>
 <span class="highlight"></span>
 <span class="bar"></span>
-<label for="latitude">{{label}}</label>
+<label [htmlFor]="label">{{label}}</label>
