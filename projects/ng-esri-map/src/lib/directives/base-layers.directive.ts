@@ -18,10 +18,7 @@ const defaultOptions = {
   visible: false
 };
 
-// TODO: Remove directive decorator after https://github.com/angular/angular/issues/30080
-@Directive({
-  selector: '[ngEsriBaseLayersDirective]'
-})
+@Directive()
 export class BaseLayersDirective<T extends __esri.Layer> implements OnDestroy {
   protected layers: Promise<T>[] = [];
   private newLayers$: Subject<void> = new Subject();

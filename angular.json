@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/esri-map",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -41,6 +42,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -81,8 +86,13 @@
           "options": {
             "tsConfig": "projects/ng-esri-map/tsconfig.lib.json",
             "project": "projects/ng-esri-map/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-esri-map/tsconfig.lib.prod.json"
+            }
           }
-        },
+},
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {

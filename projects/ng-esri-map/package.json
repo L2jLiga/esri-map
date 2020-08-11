@@ -15,10 +15,11 @@
   "homepage": "https://github.com/L2jLiga/esri-map/tree/master/projects/ng-esri-map#ngesrimap-component",
   "dependencies": {
     "@types/arcgis-js-api": "^4.0.0",
-    "esri-loader": "^2.9.2"
-  },
+    "esri-loader": "^2.9.2",
+    "tslib": "^2.0.0"
+},
   "peerDependencies": {
-    "@angular/common": "^8.0.0",
-    "@angular/core": "^8.0.0"
+    "@angular/common": "^10.0.0",
+    "@angular/core": "^10.0.0"
   }
 }

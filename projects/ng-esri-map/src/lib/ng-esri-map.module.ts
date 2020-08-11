@@ -24,7 +24,6 @@ import { _LOAD_OPTIONS } from './registry';
   imports: [],
   declarations: [
     EsriMapDirective,
-    BaseLayersDirective,
     ArcGISServerLayersDirective,
     FeatureLayersDirective,
     MapImageLayersDirective,
