@@ -7,6 +7,7 @@
  */
 
 import { Component } from '@angular/core';
+import { ɵmarkDirty as markDirty } from '@angular/core';
 import { Layer } from 'ng-esri-map';
 
 @Component({
@@ -15,7 +16,6 @@ import { Layer } from 'ng-esri-map';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    public destroyed = false;
     public options = {
       latitude:  44.95648,
       longitude: -93.261678,
@@ -23,7 +23,25 @@ export class AppComponent {
       scaleBar: true,
       homeButton: true
     };
-    public layers: Layer[] = [{
+
+    public set layers(value: Layer[]) {
+        this._layers = value;
+        markDirty(this);
+    }
+    public get layers(): Layer[] {
+        return this._layers;
+    }
+
+    public set destroyed(value: boolean) {
+        this._destroyed = value;
+        markDirty(this);
+    }
+    public get destroyed(): boolean {
+        return this._destroyed;
+    }
+
+    private _destroyed = false;
+    private _layers: Layer[] = [{
       url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer'
     }];
 
@@ -33,6 +51,7 @@ export class AppComponent {
         latitude,
         longitude
       };
+      markDirty(this);
     }
 
     public updateOptions(options) {
@@ -40,5 +59,6 @@ export class AppComponent {
         ...this.options,
         ...options
       };
+      markDirty(this);
     }
 }
